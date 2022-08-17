@@ -1,0 +1,5 @@
+npm install --save bootstrap
+npm install --save reactstrap react react-dom
+npm i react-scroll-to-top
+npm i jquery
+npm install --save react-bootstrap-validation

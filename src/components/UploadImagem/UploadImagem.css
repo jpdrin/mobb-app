@@ -1,0 +1,7 @@
+.imagens-selecionadas {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  margin: 16px;
+  background-color: aqua;
+}

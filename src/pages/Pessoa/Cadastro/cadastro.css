@@ -1,0 +1,11 @@
+#cadastro-pessoa form label{
+  display: block;
+}
+
+#cadastro-pessoa form {
+  padding: 0 0 5% 5%;  
+}
+
+#cadastro-pessoa h1 {
+  padding: 0 0 5% 5%;  
+}

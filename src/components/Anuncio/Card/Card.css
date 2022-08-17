@@ -1,0 +1,50 @@
+.anuncio-card{
+    border-radius: 8px;
+    border: 1px solid #c3c3c3;
+    box-shadow: 0 0px 7px 0 rgba(0, 0, 0, 0.15);
+    /* display: flex;     */
+    padding: 15px;
+    /* align-items: flex-start;     */
+}
+
+.anuncio-card__image{    
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 100px;
+    margin-right: 20px;
+}
+
+.anuncio-card__title{
+    font-size: 16px;
+    color: #2C3E50;
+}
+
+.anuncio-card__price{
+    font-size: 26px;
+    font-weight: 700;
+    color: #3498DB;
+}
+
+.anuncio-card__footer{
+    display: flex;
+    align-items: center;
+}
+
+.anuncio-card__comment{
+    color: #95a5a6;
+    font-weight: 700;
+}
+
+.anuncio-card__comments-count{
+    margin-left: auto;
+    margin-right: 20px;   
+    color: #3498DB;
+}
+
+.anuncio-card__link{
+    border: 1px solid #3498DB;
+    border-radius: 4px;
+    color: #3498DB;
+    text-decoration: none;
+    padding: 8px 10px;
+}
