@@ -66,6 +66,7 @@ const Hero = () => {
     if (e.hasOwnProperty("ufEstado")){ // Se veio do combo Estado
       setIdEstado(e.value);
       parametrosBusca.idEstado = e.value;
+      parametrosBusca.idCidade = 0;
     }else if (e.hasOwnProperty("idEstado")){ //Se veio do Combo Cidade
       setValorCidade({ value: e.value, label: e.label});      
       parametrosBusca.idCidade = e.value;

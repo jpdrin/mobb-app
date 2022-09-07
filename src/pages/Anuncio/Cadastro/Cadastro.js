@@ -17,8 +17,9 @@ import { Container, Content } from "../../../components/UploadImagem/styles";
 import { CadastroContext } from "../../../contexts/Anuncio/cadastro";
 import { useNavigate, useParams } from "react-router-dom";
 import Alerta from "../../../components/Alerta/alerta";
-import Navbar from "../../../components/Navbar/Navbar";
 import { decryptId } from "../../../utils/cryptoUtils";
+import Navbar from "../../../components/navbar_novo/Navbar";
+import MobbFooter from "../../../components/Footer/Footer";
 
 const CadastroAnuncio = () => {
   const { logout, usuario, exibirAlertaSucesso, setExibirAlertaSucesso } =
@@ -38,6 +39,7 @@ const CadastroAnuncio = () => {
     descricaoAnuncio: "",
     valorServicoAnuncio: "",
     horasServicoAnuncio: "",
+    telefoneContatoAnuncio: "",
     urlImagensAnuncio: "",
   };
 
@@ -267,6 +269,16 @@ const CadastroAnuncio = () => {
             />
           </div>
           <div>
+            <label htmlFor="telefoneContatoAnuncio">Telefone para contato do Anúncio</label>
+            <input
+              type="text"
+              name="telefoneContatoAnuncio"
+              id="telefoneContatoAnuncio"
+              onChange={atualizaValores}
+              value={valores.telefoneContatoAnuncio}
+            />
+          </div>
+          <div>
           <label htmlFor="uf">Estado</label>
             <Select
               name="uf"
@@ -301,6 +313,7 @@ const CadastroAnuncio = () => {
         </form>
         <Alerta exibir={exibirAlertaSucesso} />
       </div>
+      <MobbFooter />
     </>
   );
 };

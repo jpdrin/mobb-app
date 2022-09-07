@@ -11,11 +11,16 @@ import {MdAddBox} from 'react-icons/md';
 import {RiFolderUserFill, RiLoginBoxFill} from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
+import {  
+  Navbar as Nav 
+} from "reactstrap";
+
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const navigate = useNavigate();
 
   return (
+    // <Nav className={"fixed-top"}>
     <header className={styles.navbar} style={{backgroundColor: "#FF8C00"}}>
       <img src={Logo} alt='Logo' className={styles.logo} onClick={() => navigate("/")} />
       <nav>
@@ -27,7 +32,7 @@ const Navbar = () => {
             <a href='/meus-anuncios'> <RiFolderUserFill size={30} style={{ marginTop: '-10px' }} /> Meus Anúncios</a>
           </li>
           <li>
-            <a href='/#'> <RiLoginBoxFill size={30} style={{ marginTop: '-10px' }} /> Entrar</a>
+            <a href='/login'> <RiLoginBoxFill size={30} style={{ marginTop: '-10px' }} /> Entrar</a>
           </li>
           <li>
             <AiOutlineSearch size={25}  />
@@ -41,6 +46,7 @@ const Navbar = () => {
         {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}        
       </div>
     </header>
+    // </Nav>
   );
 };
 

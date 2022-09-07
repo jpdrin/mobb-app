@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
-import { listaEstados, listaCidades, InserePessoa } from "../../../services/Api";
+import {
+  listaEstados,
+  listaCidades,
+  InserePessoa,
+} from "../../../services/Api";
 import { useNavigate } from "react-router-dom";
-
+import TextField from "@mui/material/TextField";
 import "./cadastro.css";
+// import Cad from "./cad2";
+import MobbSelect from "../../../components/MobbSelect/Select";
+import MobbPassword from "../../../components/MobbPassword/MobbPassword";
+import {
+  cpfMask,
+  validaCPF,
+  validateEmail,
+  telefoneDDIMask,
+  validaSenhaForte,
+} from "../../../utils/mascarasUtils";
+import { FormHelperText } from "@mui/material";
+import swal from "sweetalert";
 
 const valorInicial = {
   nomePessoa: "",
@@ -31,32 +46,112 @@ const generos = [
 ];
 
 const CadastroPessoa = () => {
-  const [valores, setValores] = useState(valorInicial);  
+  // const [valores, setValores] = useState(valorInicial);
+  const valores = valorInicial;
   const [estados, setEstados] = useState(estadosIniciais);
-  const [idEstado, setIdEstado] = useState(0);
-  const [cidades, setCidades] = useState(cidadesIniciais);  
+  // const [idEstado, setIdEstado] = useState(0);
+  // const [cidades, setCidades] = useState(cidadesIniciais);
+  const [erros, setErros] = useState({
+    nomePessoa: "*Obrigatório",
+    sexoPessoa: "*Obrigatório",
+    inscricaoNacionalPessoa: "*Obrigatório",
+    emailPessoa: "*Obrigatório",
+    telefoneCelularPessoa: "*Obrigatório",
+    dataNascimentoPessoa: "*Obrigatório",
+    codigoUsuarioPessoa: "*Obrigatório",
+    senhaUsuarioPessoa: "*Obrigatório",
+  });
   const navigate = useNavigate();
 
-  useEffect(() => {    
-    buscaEstados();    
-  }, []);
+  // useEffect(() => {
+  //   buscaEstados();
+  // }, []);
 
-  useEffect(() => {    
-    buscaCidades(idEstado);
-  }, [idEstado]);
+  // useEffect(() => {
+  //   buscaCidades(idEstado);
+  // }, [idEstado]);
 
   const atualizaValores = (e) => {
     if (e.hasOwnProperty("target")) {
       const { name, value } = e.target;
-      setValores({ ...valores, [name]: value });
+
+      if (name === "inscricaoNacionalPessoa") {
+        valores[name] = cpfMask(value);
+      } else if (name === "telefoneCelularPessoa") {
+        valores[name] = telefoneDDIMask(value);
+      } else {
+        valores[name] = value;
+      }
     } else if (e.value === "F" || e.value === "M") {
-      setValores({ ...valores, sexoPessoa: e.value });
+      valores.sexoPessoa = e.value;
     } else {
-      setValores({ ...valores, idCidade: e.value });
+      valores.idCidade = e.value;
+    }
+
+    validaCampos(e);
+  };
+
+  const validaCampos = (e) => {
+    if (e.hasOwnProperty("target")) {
+      const { name, value } = e.target;
+
+      switch (name) {
+        case "nomePessoa":
+          if (valores.nomePessoa.length < 3)
+            setErros({ ...erros, [name]: "Nome Inválido!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "inscricaoNacionalPessoa":
+          if (!validaCPF(valores.inscricaoNacionalPessoa))
+            setErros({ ...erros, [name]: "CPF Inválido!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "emailPessoa":
+          if (!validateEmail(valores.emailPessoa))
+            setErros({ ...erros, [name]: "E-mail Inválido!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "telefoneCelularPessoa":
+          if (valores.telefoneCelularPessoa.length < 19)
+            setErros({ ...erros, [name]: "Telefone Inválido!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "dataNascimentoPessoa":
+          if (valores.dataNascimentoPessoa === "")
+            setErros({ ...erros, [name]: "Data Inválida!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "codigoUsuarioPessoa":
+          if (valores.codigoUsuarioPessoa.length < 3)
+            setErros({
+              ...erros,
+              [name]:
+                "O Código do usuário deve haver pelo menos 3 caracteres !",
+            });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "senhaUsuarioPessoa":
+          if (!validaSenhaForte(valores.senhaUsuarioPessoa))
+            setErros({
+              ...erros,
+              [name]:
+                "Mínimo 8 caracteres, uma letra maiúscula, uma minuscula, um caractere especial e um número!",
+            });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+      }
+    } else if (e.value === "F" || e.value === "M") {
+      setErros({ ...erros, sexoPessoa: "Ok!" });
     }
   };
 
-  const buscaEstados = async () => {
+  /*const buscaEstados = async () => {
     const response = await listaEstados();
     const data = response.data;
 
@@ -69,9 +164,9 @@ const CadastroPessoa = () => {
     });
 
     setEstados(data);
-  };
+  };*/
 
-  const buscaCidades = async (idEstado) => {
+  /*const buscaCidades = async (idEstado) => {
     const response = await listaCidades(idEstado);
     const data = response.data;
 
@@ -84,180 +179,289 @@ const CadastroPessoa = () => {
     });
 
     setCidades(data);
-  };
+  };*/
+
+  function verificaCamposInvalidos(obj) {
+    var camposInvalidos = 0;
+
+    for (var propriedade in obj) {
+      if (obj.hasOwnProperty(propriedade)) {
+        if (typeof obj[propriedade] == "object") {
+          verificaCamposInvalidos(obj[propriedade]);
+        } else {
+          if (obj[propriedade] !== "Ok!") camposInvalidos += 1;
+        }
+      }
+    }
+
+    return camposInvalidos;
+  }
 
   const cadastraPessoa = async (e) => {
     e.preventDefault();
 
+    if (verificaCamposInvalidos(erros) > 0) return;
+
     const response = await InserePessoa(valores);
-    
-    if (response){
-      console.log("FOIII!")
+
+    if (response.status === 200) {
+      swal({
+        title: "Sucesso!",
+        text: "Cadastro realizado com sucesso!",
+        icon: "success",
+        button: "Fechar",
+      });
+      console.log("FOIII!");
+      console.log(response);
       navigate("/login");
-    }else{
-      console.log("NÃOO FOI!");
+    } else {
+      swal({
+        title: "Erro!",
+        text: response.data,
+        icon: "error",
+        button: "Fechar",
+      });
     }
   };
 
+  console.log(valores);
+
   return (
-    <div id="cadastro-pessoa">
-      <h1>Cadastro de Pessoa</h1>
-      <form onSubmit={cadastraPessoa}>
-        <h3>Dados Pessoais</h3>
-        <div>
-          <label htmlFor="nomePessoa">Nome</label>
-          <input
-            type="text"
-            maxLength="80"
-            name="nomePessoa"
-            id="nomePessoa"
-            onChange={atualizaValores}
-          />
+    <div>
+      <div id="cadastro-pessoa">
+        <div className="bg-gradient-primary">
+          <div className="container">
+            <div className="card o-hidden border-0 shadow-lg my-5">
+              <div className="card-body p-0">
+                <div className="row">
+                  <div className="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                  <div className="col-lg-7">
+                    <div className="p-5">
+                      <div className="text-center">
+                        <h1 className="h4 text-gray-900 mb-4">
+                          Cadastre-se grátis!
+                        </h1>
+                      </div>
+                      <form onSubmit={cadastraPessoa} className="user">
+                        <div className="form-group row">
+                          <div className="col-sm-8 mb-3 mb-sm-0">
+                            <TextField
+                              label="Nome"
+                              className="form-control form-control-user"
+                              size="small"
+                              maxLength="80"
+                              name="nomePessoa"
+                              id="nomePessoa"
+                              onChange={atualizaValores}
+                              onBlur={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.nomePessoa !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.nomePessoa}
+                            </FormHelperText>
+                          </div>
+                          <div className="col-sm-4">
+                            <MobbSelect
+                              valorLabel="Genero"
+                              name="sexoPessoa"
+                              id="sexoPessoa"
+                              dataOptions={generos}
+                              onChange={atualizaValores}
+                              focus={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.sexoPessoa !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.sexoPessoa}
+                            </FormHelperText>
+                          </div>
+                        </div>
+                        <div className="form-group row">
+                          <div className="col-sm-5 mb-3 mb-sm-0">
+                            <TextField
+                              label="CPF"
+                              className="form-control form-control-user"
+                              size="small"
+                              type="text"
+                              maxLength="11"
+                              value={valores.inscricaoNacionalPessoa}
+                              name="inscricaoNacionalPessoa"
+                              id="inscricaoNacionalPessoa"
+                              onChange={atualizaValores}
+                              onBlur={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.inscricaoNacionalPessoa !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.inscricaoNacionalPessoa}
+                            </FormHelperText>
+                          </div>
+                          <div className="col-sm-7">
+                            <TextField
+                              label="E-mail"
+                              className="form-control form-control-user"
+                              size="small"
+                              type="email"
+                              maxLength="80"
+                              name="emailPessoa"
+                              id="emailPessoa"
+                              onChange={atualizaValores}
+                              onBlur={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.emailPessoa !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.emailPessoa}
+                            </FormHelperText>
+                          </div>
+                        </div>
+                        <div className="form-group row">
+                          <div className="col-sm-6 mb-3 mb-sm-0">
+                            <TextField
+                              label="Telefone"
+                              className="form-control form-control-user"
+                              size="small"
+                              type="text"
+                              value={valores.telefoneCelularPessoa}
+                              name="telefoneCelularPessoa"
+                              id="telefoneCelularPessoa"
+                              onChange={atualizaValores}
+                              onBlur={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.telefoneCelularPessoa !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.telefoneCelularPessoa}
+                            </FormHelperText>
+                          </div>
+                          <div className="col-sm-6">
+                            <TextField
+                              label="Data Nascimento"
+                              className="form-control form-control-user"
+                              size="small"
+                              type="date"
+                              InputLabelProps={{ shrink: true }}
+                              name="dataNascimentoPessoa"
+                              id="dataNascimentoPessoa"
+                              onChange={atualizaValores}
+                              onBlur={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.dataNascimentoPessoa !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.dataNascimentoPessoa}
+                            </FormHelperText>
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <TextField
+                            label="Usuário"
+                            className="form-control form-control-user"
+                            size="small"
+                            type="text"
+                            maxLength="15"
+                            name="codigoUsuarioPessoa"
+                            id="codigoUsuarioPessoa"
+                            onChange={atualizaValores}
+                          />
+                          <FormHelperText
+                            style={
+                              erros.codigoUsuarioPessoa !== "Ok!"
+                                ? { color: "red" }
+                                : { color: "green" }
+                            }
+                            className="helper-text-pessoa"
+                          >
+                            {erros.codigoUsuarioPessoa}
+                          </FormHelperText>
+                        </div>
+                        <div className="form-group">
+                          <MobbPassword
+                            name="senhaUsuarioPessoa"
+                            id="senhaUsuarioPessoa"
+                            value={valores.senhaUsuarioPessoa}
+                            onChange={atualizaValores}
+                            onBlur={atualizaValores}
+                          />
+                          <FormHelperText
+                            style={
+                              erros.senhaUsuarioPessoa !== "Ok!"
+                                ? { color: "red" }
+                                : { color: "green" }
+                            }
+                            className="helper-text-pessoa"
+                          >
+                            {erros.senhaUsuarioPessoa}
+                          </FormHelperText>
+                        </div>
+                        <input
+                          type="submit"
+                          value="Cadastrar"
+                          className="btn btn-warning btn-user btn-block"
+                          style={{ width: "100%" }}
+                        />
+
+                        <hr />
+                        <input
+                          type="button"
+                          value="Voltar para o Login"
+                          className="btn btn-dark btn-user btn-block"
+                          style={{ width: "100%" }}
+                          onClick={() => {
+                            navigate("/login");
+                          }}
+                        />
+                      </form>
+                      <hr />
+                      {/* <div className="text-center">
+                      <a className="small" href="forgot-password.html">
+                        Esqueceu sua senha?
+                      </a>
+                    </div> */}
+                      {/* <div className="text-center">
+                      <a className="small" href="login.html">
+                        Já possui cadastro? Login!
+                      </a>
+                    </div> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <label htmlFor="sexoPessoa">Genero</label>
-          <Select
-            name="sexoPessoa"
-            id="sexoPessoa"
-            options={generos}
-            onChange={(e) => atualizaValores(e)}
-          />
-        </div>
-        <div>
-          <label htmlFor="inscricaoNacionalPessoa">CPF</label>
-          <input
-            type="text"
-            name="inscricaoNacionalPessoa"
-            id="inscricaoNacionalPessoa"
-            onChange={atualizaValores}
-          />
-        </div>
-        <div>
-          <label htmlFor="emailPessoa">E-mail</label>
-          <input
-            type="email"
-            maxLength="80"
-            name="emailPessoa"
-            id="emailPessoa"
-            onChange={atualizaValores}
-          />
-        </div>
-        <div>
-          <label htmlFor="telefoneCelularPessoa">Telefone</label>
-          <input
-            type="tel"
-            maxLength="20"
-            name="telefoneCelularPessoa"
-            id="telefoneCelularPessoa"
-            onChange={atualizaValores}
-          />
-        </div>
-        <div>
-          <label htmlFor="dataNascimentoPessoa">Data de Nascimento</label>
-          <input
-            type="date"
-            name="dataNascimentoPessoa"
-            id="dataNascimentoPessoa"
-            onChange={atualizaValores}
-          />
-        </div>
-        <h3>Endereço</h3>         
-        <div>
-          <label htmlFor="uf">Estado</label>
-          <Select
-            name="uf"
-            id="uf"
-            placeholder="Selecione..."
-            onChange={(e) => setIdEstado(e.value)}
-            options={estados}
-            noOptionsMessage={() => "Nenhuma opção encontrada!"}            
-          />
-        </div>
-        <div>
-          <label htmlFor="idCidade">Cidade</label>
-          <Select
-            name="idCidade"
-            id="idCidade"
-            placeholder="Selecione..."
-            options={cidades}
-            isDisabled={!idEstado > 0}
-            onChange={(e) => atualizaValores(e)}
-            noOptionsMessage={() => "Nenhuma opção encontrada!"}
-          />
-        </div>
-        <div>
-          <label htmlFor="logradouroEndereco">Logradouro</label>
-          <input
-            type="text"
-            maxLength="100"
-            name="logradouroEndereco"
-            id="logradouroEndereco"
-            onChange={atualizaValores}
-          />
-        </div>
-        <div>
-          <label htmlFor="numeroLogradouroEndereco">Número</label>
-          <input
-            type="text"
-            maxLength="10"
-            name="numeroLogradouroEndereco"
-            id="numeroLogradouroEndereco"
-            onChange={atualizaValores}
-          />
-        </div>
-        <div>
-          <label htmlFor="bairroEndereco">Bairro</label>
-          <input
-            type="text"
-            maxLength="80"
-            name="bairroEndereco"
-            id="bairroEndereco"
-            onChange={atualizaValores}
-          />
-        </div>
-        <div>
-          <label htmlFor="complementoEndereco">Complemento</label>
-          <input
-            type="text"
-            maxLength="80"
-            name="complementoEndereco"
-            id="complementoEndereco"
-            onChange={atualizaValores}
-          />
-        </div>
-        <h3>Usuário</h3>
-        <div>
-          <label htmlFor="codigoUsuarioPessoa">Código de Usuário</label>
-          <input
-            type="text"
-            maxLength="15"
-            name="codigoUsuarioPessoa"
-            id="codigoUsuarioPessoa"
-            onChange={atualizaValores}
-          />
-        </div>
-        <div>
-          <label htmlFor="senhaUsuarioPessoa">Senha</label>
-          <input
-            type="password"
-            maxLength="15"
-            name="senhaUsuarioPessoa"
-            id="senhaUsuarioPessoa"
-            onChange={atualizaValores}
-          />
-        </div>
-        <div>
-          <label htmlFor="confirmaSenha">Confirme a Senha</label>
-          <input
-            type="password"
-            maxLength="15"
-            name="confirmaSenha"
-            id="confirmaSenha"
-          />
-        </div>
-        <br />
-        <input className="enviar" type="submit" value="Cadastrar" />
-      </form>
+      </div>
     </div>
   );
 };

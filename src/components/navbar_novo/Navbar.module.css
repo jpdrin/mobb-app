@@ -17,7 +17,7 @@
    /* padding-bottom: 3px;  */
 }
 
-.navbar .menu li :hover {
+.navbar .menu li :hover {  
   color: white;  
   cursor: pointer;  
   transition: 0.5s;

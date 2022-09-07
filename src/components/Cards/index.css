@@ -25,15 +25,15 @@
 
 .productCard{
   position: relative;
-  background-color: var(--color-grey-primary);
+  background-color: #FFFFFF;/*var(--color-grey-primary);*/
   /* margin: 1rem; */
   flex: 1 0 25rem;
   /* max-width: 30rem; */
   max-height: 50rem;
   transition: 0.2s;
   width: 100%;
-  border: 1px solid lightgrey;
-  border-radius: 10px;
+  border: 1px solid #ff6500;
+  border-radius: 10px;  
 }
 
 .productCard:hover{
@@ -95,6 +95,7 @@
 .productPrice{
   font-size: 1.5rem;
   font-weight: bold;
+  color: #ff6500;
 }
 
 .productSales,

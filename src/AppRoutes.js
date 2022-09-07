@@ -15,6 +15,7 @@ import { CadastroContext, CadastroProvider } from "./contexts/Anuncio/cadastro";
 import AnuncioPessoa from "./pages/Anuncio/Pessoa/anuncioPessoa";
 import Navbar from "./components/navbar_novo/Navbar";
 import ListagemAnuncios from "./pages/Anuncio/Listagem/listagemAnuncios";
+import MobbFooter from "./components/Footer/Footer";
 
 const AppRoutes = () => {
   
@@ -36,7 +37,7 @@ const AppRoutes = () => {
   return (
 
     <BrowserRouter>
-    <Navbar />
+    {/* <Navbar /> */}
       <SistemaProvider>
         <Routes>
           <Route path="/" exact element={<Home></Home>} />
@@ -89,7 +90,8 @@ const AppRoutes = () => {
           <Route path="/anuncios/:idEstado/:idCidade/:idCategoriaAnuncio"
           element={<ListagemAnuncios></ListagemAnuncios>} />
         </Routes>
-      </SistemaProvider>
+      </SistemaProvider> 
+      {/* <MobbFooter />      */}
     </BrowserRouter>
   );
 };

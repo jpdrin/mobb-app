@@ -25,8 +25,9 @@ const Avaliacao = () => {
         width: 200,
         display: "flex",
         alignItems: "center",
+        paddingBottom: "5%"
       }}
-    >
+    >      
       <Rating
         name="hover-feedback"
         value={valor}
@@ -42,18 +43,18 @@ const Avaliacao = () => {
         }}
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
       />
+      <div style={{paddingLeft: "30px"}}>Avaliações</div>
       {valor !== null && (
         <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : valor]}</Box>
-      )}
-
-      <Rating
+      )}            
+      {/* <Rating
         name="text-feedback"
         value={0}
         readOnly
         precision={0.5}
         size="large"
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-      />
+      /> */}
     </Box>
   );
 };

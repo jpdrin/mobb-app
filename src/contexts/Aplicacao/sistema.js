@@ -2,6 +2,8 @@ import React, { useState, useEffect, createContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Hero from "../../components/hero/Hero";
 import { Api, createSession } from "../../services/Api";
+import swal from "sweetalert";
+import Loading from "../../components/Loading/loading";
 
 export const SistemaContext = createContext();
 
@@ -14,8 +16,7 @@ const parametrosBusca = {
 export const SistemaProvider = ({ children }) => {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState(null);
-  const [carregando, setCarregando] = useState(true);
-  const [exibirAlertaSucesso, setExibirAlertaSucesso] = useState(false);  
+  const [carregando, setCarregando] = useState(false);  
 
   useEffect(() => {
     //Recuperando os valores do LocalStorage para atribuir novamente ao dar o refresh na página
@@ -27,7 +28,7 @@ export const SistemaProvider = ({ children }) => {
       Api.defaults.headers.Authorization = `Bearer ${tokenRecuperado}`;
     }
 
-    setCarregando(false);
+    // setCarregando(false);
   }, []);
 
   console.log(parametrosBusca);
@@ -35,8 +36,21 @@ export const SistemaProvider = ({ children }) => {
   const login = async (usuario, senha) => {
     console.log("Login Autenticado", { usuario, senha });
 
-    const response = await createSession(usuario, senha);
-    console.log("login", response.data);
+    const response = await createSession(usuario, senha);    
+
+    console.log("login", response);
+    console.log("login", response.data.token);
+
+    if (response.status !== 200){
+      swal({
+        title: "Erro!",
+        text: response.data,
+        icon: "error",
+        button: "Fechar",
+      });
+
+      return;
+    }    
 
     // api criar uma session
     const usuarioLogado = response.data.usuario;
@@ -88,10 +102,9 @@ export const SistemaProvider = ({ children }) => {
         autenticado: !!usuario,
         usuario,
         carregando,
+        setCarregando,
         login,
-        logout,
-        exibirAlertaSucesso,
-        setExibirAlertaSucesso,
+        logout,        
         ServicesRefCategorias,
         ServicesRefEstados,
         irPara,
@@ -99,6 +112,7 @@ export const SistemaProvider = ({ children }) => {
       }}
     >
       {children}
+      <Loading carregando={carregando} />
     </SistemaContext.Provider>
   );
 };

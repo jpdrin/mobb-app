@@ -5,16 +5,16 @@ import Card from "../../components/Anuncio/Card/Card";
 import { Api } from "../../services/Api";
 import { SistemaContext } from "../../contexts/Aplicacao/sistema";
 // import Navbar from "../../components/Navbar/Navbar";
-import Navbar from "../../components/navbar_novo/Navbar";
 import Luxury from "../../components/Cards/Cards";
 import Find from "../../components/find/Find";
 import Hero from "../../components/hero/Hero";
 // import { Products } from "../../components/product/products";
-
+import Navbar from "../../components/navbar_novo/Navbar";
+import MobbFooter from "../../components/Footer/Footer";
 
 const Home = () => {
   const [anuncios, setAnuncios] = useState([]);
-  const [busca, setBusca] = useState("");  
+  const [busca, setBusca] = useState("");
 
   const { exibirAlertaSucesso } = useContext(SistemaContext);
 
@@ -39,27 +39,14 @@ const Home = () => {
   }, [busca, anuncios]);
 
   return (
-    <div>
-      {/* <Navbar /> */}
-      <Hero />
-      <Find />        
-      {/* <div style={{ width: 800, margin: "30px auto" }}>       */}
-      {/* <input
-        type="text"
-        name="teste"
-        value={busca}
-        onChange={(e) => setBusca(e.target.value)}
-      />
-
-      {!dadosFilter.length > 0 && <p>Nenhum registro encontrado!</p>}
-
-      {dadosFilter.map((anuncio, index) => (
-        <Card key={index} anuncio={anuncio} />
-      ))}
-
-      <Alerta exibir={exibirAlertaSucesso} /> */}
-      {/* </div> */}
-    </div>
+    <>
+      <Navbar />
+      <div>
+        <Hero />
+        <Find />        
+      </div>
+      <MobbFooter />
+    </>
   );
 };
 

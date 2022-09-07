@@ -1,11 +1,12 @@
 import React, {useState, useEffect, useContext} from "react";
-import Navbar from "../../../components/Navbar/Navbar";
 import { listaAnunciosPessoa } from "../../../services/Api";
 import { useParams, useNavigate } from "react-router-dom";
 import { SistemaProvider, SistemaContext } from "../../../contexts/Aplicacao/sistema";
 import Card from "../../../components/Anuncio/Card/Card";
 import { encryptId } from "../../../utils/cryptoUtils";
 import { verificaTokenValido, deletaAnuncio } from "../../../services/Api";
+import Navbar from "../../../components/navbar_novo/Navbar";
+import MobbFooter from "../../../components/Footer/Footer";
 
 const AnuncioPessoa = () => {
   
@@ -46,7 +47,8 @@ const AnuncioPessoa = () => {
 
   return(
     <>
-      <Navbar />
+    <Navbar />
+      {/* <Navbar /> */}
       
       {anuncios.map((anuncio, index) => (
         <div key={index}>
@@ -55,7 +57,8 @@ const AnuncioPessoa = () => {
           <button onClick={() => apagaAnuncio(anuncio.idAnuncio)}>Excluir</button>
         </div>
         
-      ))}      
+      ))}
+      <MobbFooter /> 
     </>
   );
 }

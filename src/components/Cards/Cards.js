@@ -10,36 +10,63 @@ import { Rating } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { AiOutlineHeart } from "react-icons/ai";
 import "./index.css";
+import { encryptId } from "../../utils/cryptoUtils";
+import { useNavigate } from "react-router-dom";
 
+const Cards = ({ anuncios }) => {
+  const navigate = useNavigate();
 
-const Cards = ({productDatas}) => {
   return (
     <div className={Styles.luxury}>
       <div className={Styles.container}>
-
-        {productDatas.map((productData, index) => (
-          <div key={productData.idAnuncio} className="productCard">
+        {anuncios.map((anuncio, index) => (
+          <div
+            key={anuncio.idAnuncio}
+            className="productCard"
+            onClick={() =>
+              navigate(
+                `/detalhes/${anuncio.tituloAnuncio}/${encryptId(
+                  String(anuncio.idAnuncio)
+                )}`
+              )
+            }
+          >
             <img
-              src={productData.urlImagemAnuncio}
+              src={anuncio.urlImagemAnuncio}
               alt="product-img"
               className="productImage"
             ></img>
 
-            <AiOutlineHeart className={"productCard__cart"} onClick={() => alert('foi no coração')}/>
+            <AiOutlineHeart
+              className={"productCard__cart"}
+              onClick={() => alert("foi no coração")}
+            />
             {/* <FaRegBookmark className={"productCard__wishlist"} />
             <FaFireAlt className={"productCard__fastSelling"} /> */}
 
             <div className="productCard__content">
-              <h3 className="productName">{productData.tituloAnuncio}</h3>
+              <h3
+                className="productName"
+                style={{
+                  whiteSspace: "pre-wrap",
+                  overflowWrap: "break-word",
+                  maxWidth: "240px",
+                }}
+              >
+                {anuncio.tituloAnuncio}
+              </h3>
               <div className="displayStack__1">
-                <div className="productPrice">R${productData.valorServicoAnuncio}/{productData.horasServicoAnuncio} {productData.valorServicoAnuncio > 1 ? "Horas" : "Hora"}</div>
+                <div className="productPrice">
+                  R${anuncio.valorServicoAnuncio}/{anuncio.horasServicoAnuncio}{" "}
+                  {anuncio.valorServicoAnuncio > 1 ? "Horas" : "Hora"}
+                </div>
                 <div className="productSales">
-                  {productData.totalSales} units sold
+                  {anuncio.totalSales} units sold
                 </div>
               </div>
               <div className="displayStack__2">
                 <div className="productRating">
-                  {/* {[...Array(productData.rating)].map((index) => (
+                  {/* {[...Array(anuncios.rating)].map((index) => (
                     <FaStar id={index + 1} key={index} />
                   ))} */}
                   <Rating
@@ -48,17 +75,22 @@ const Cards = ({productDatas}) => {
                     readOnly
                     precision={0.5}
                     size="small"
-                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                    emptyIcon={
+                      <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
+                    }
                   />
                 </div>
-                <div className="productTime">
-                  {productData.timeLeft} days left
-                </div>
+                <div className="productTime">{anuncio.timeLeft} days left</div>
               </div>
+              <input
+                type="button"
+                value="Ver Anúncio"
+                className="btn"
+                style={{ width: "100%", backgroundColor: "#ff6500", color: "#FFFFFF" }}
+              />
             </div>
           </div>
         ))}
-
       </div>
     </div>
   );

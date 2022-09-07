@@ -1,0 +1,12 @@
+.detalhesPage .descricao {
+  white-space: "pre-wrap";
+  overflow-wrap: break-word;
+  overflow-y: scroll;
+  height: 245px;  
+  max-width: 100%;
+}
+
+.detalhesPage .titulo {
+  white-space: "pre-wrap";
+  overflow-wrap: break-word;  
+}
