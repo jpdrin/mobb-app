@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { decryptId } from "../../../utils/cryptoUtils";
-import { dadosAnuncio, dadosAnuncioImagens } from "../../../services/Api";
+import {
+  dadosAnuncio,
+  dadosAnuncioImagens,
+  verificaTokenValido,
+} from "../../../services/Api";
 import CarouselAnuncio from "../../../components/Carousel/Carousel";
 import { Container, Row, Col } from "reactstrap";
 import Avaliacao from "../../../components/Avaliacao/avaliacao";
@@ -10,6 +14,7 @@ import "./detalhes.css";
 import Comentarios from "../../../components/Modal/Comentarios/comentarios";
 import Navbar from "../../../components/navbar_novo/Navbar";
 import MobbFooter from "../../../components/Footer/Footer";
+import { SistemaContext } from "../../../contexts/Aplicacao/sistema";
 import { useNavigate } from "react-router-dom";
 
 const data = [
@@ -39,12 +44,15 @@ const Detalhes = () => {
   const [anuncio, setAnuncio] = useState({});
   const [anuncioImagens, setAnuncioImagens] = useState({});
   const [openModal, setOpenModal] = useState(false);
+  const [tokenValido, setTokenValido] = useState(false);
+  const { usuario } = useContext(SistemaContext);
   // const navigate = useNavigate();
 
   useEffect(() => {
     console.log("teste");
     listaAnuncio(decryptId(idAnuncio));
-    listaAnuncioImagens(decryptId(idAnuncio));    
+    listaAnuncioImagens(decryptId(idAnuncio));
+    validaToken();
   }, []);
 
   const listaAnuncio = async (idAnuncio) => {
@@ -66,6 +74,12 @@ const Detalhes = () => {
     });
 
     setAnuncioImagens(data);
+  };
+
+  const validaToken = async () => {
+    const response = await verificaTokenValido();
+
+    setTokenValido(response.data);
   };
 
   console.log(anuncio);
@@ -111,7 +125,7 @@ const Detalhes = () => {
                   </a>
                 </button>
                 <button onClick={() => setOpenModal(true)}>Abrir</button>
-                <button onClick={() => {}}>Favoritar</button>
+                {(usuario && tokenValido) && <button onClick={() => {}}>Favoritar</button>}
                 <button onClick={() => {}}>Voltar</button>
                 <Comentarios
                   openModal={openModal}

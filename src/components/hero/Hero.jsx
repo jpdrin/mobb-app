@@ -107,7 +107,7 @@ const Hero = () => {
           />
         </div>
         <div className={styles.search_btn} onClick={() => filtrar()}>
-          <button className={styles.btn}>Search for cars</button>
+          <button className={styles.btn}>Selecionar Categoria</button>
           <AiOutlineSearch size={25} className={styles.icon} />
         </div>
       </form>

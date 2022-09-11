@@ -70,7 +70,7 @@
   justify-content: end;  
   text-align: center;
 
-  max-width: 1200px; /*Iguala o tamanho com as posições dos card*/
+  max-width: 1400px; /*Iguala o tamanho com as posições dos card*/
   margin: auto;
   padding: 2rem 1rem;   
   margin-top: 10px;
@@ -84,20 +84,34 @@
   margin-bottom: 0;
 }
 
+.ListagemAnuncio__pesquisa-container .ListagemAnuncio__btn-pesquisar{
+  width: 50px;
+  margin-right: 10px;
+  margin-bottom: 0;
+}
+
 .ListagemAnuncio__select-ordernar{
   
 }
 
-@media (max-width: 509px) {
+@media (max-width: 600px) {
   .ListagemAnuncio__pesquisa-container {
     flex-direction: column;
-    margin-top: 10px;
-    padding: 0 1rem;
+    margin-top: 55px;
+    padding: 0 1rem;    
   }
 
   .ListagemAnuncio__pesquisa-container .ListagemAnuncio__input-pesquisar{
     width: 100%;
     padding-right: 0;    
     margin-bottom: 10px;
-  }  
+  }
+
+  .ListagemAnuncio__pesquisa-container .ListagemAnuncio__btn-pesquisar{
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    
+  }
+
 }

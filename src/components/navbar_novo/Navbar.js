@@ -21,7 +21,7 @@ const Navbar = () => {
 
   return (
     // <Nav className={"fixed-top"}>
-    <header className={styles.navbar} style={{backgroundColor: "#FF8C00"}}>
+    <header className={styles.navbar} style={{backgroundColor: "#FF8C00"}} id="navMobb">
       <img src={Logo} alt='Logo' className={styles.logo} onClick={() => navigate("/")} />
       <nav>
         <ul className={nav ? [styles.menu, styles.active].join(' ') : [styles.menu]} >

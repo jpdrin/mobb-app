@@ -16,20 +16,24 @@ const parametrosBusca = {
 export const SistemaProvider = ({ children }) => {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState(null);
-  const [carregando, setCarregando] = useState(false);  
+  const [carregando, setCarregando] = useState(true);  
 
   useEffect(() => {
     //Recuperando os valores do LocalStorage para atribuir novamente ao dar o refresh na página
     const usuarioRecuperado = localStorage.getItem("usuario");
     const tokenRecuperado = localStorage.getItem("token");
 
+    console.log("recu", usuarioRecuperado, tokenRecuperado);
+
     if (usuarioRecuperado && tokenRecuperado) {
       setUsuario(JSON.parse(usuarioRecuperado));
       Api.defaults.headers.Authorization = `Bearer ${tokenRecuperado}`;
     }
 
-    // setCarregando(false);
+    setCarregando(false);
   }, []);
+
+  console.log("recu 2", usuario);
 
   console.log(parametrosBusca);
 
@@ -58,7 +62,8 @@ export const SistemaProvider = ({ children }) => {
 
     //Enviando o Token no Header
     Api.defaults.headers.Authorization = `Bearer ${token}`;
-
+    
+    console.log("usu", usuarioLogado, token);
     localStorage.setItem("usuario", JSON.stringify(usuarioLogado));
     localStorage.setItem("token", token);
 
@@ -76,6 +81,8 @@ export const SistemaProvider = ({ children }) => {
     setUsuario(null);
     navigate("/login");
   };
+
+  console.log(usuario);
 
   //#region Rolagem do Scroll
   const ServicesRefCategorias = useRef(null);

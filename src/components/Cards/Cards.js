@@ -1,19 +1,20 @@
 import React from "react";
-import Styles from "./Luxury.module.css";
+import Styles from "./CardsContainer.module.css";
 import {
   FaShoppingCart,
   FaRegBookmark,
   FaStar,
   FaFireAlt,
 } from "react-icons/fa";
+import { FcLike } from "react-icons/fc";
 import { Rating } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { AiOutlineHeart } from "react-icons/ai";
-import "./index.css";
+import "./Cards.css";
 import { encryptId } from "../../utils/cryptoUtils";
 import { useNavigate } from "react-router-dom";
 
-const Cards = ({ anuncios }) => {
+const Cards = ({ anuncios, anunciosFavoritos }) => {
   const navigate = useNavigate();
 
   return (
@@ -35,34 +36,24 @@ const Cards = ({ anuncios }) => {
               src={anuncio.urlImagemAnuncio}
               alt="product-img"
               className="productImage"
-            ></img>
-
-            <AiOutlineHeart
-              className={"productCard__cart"}
-              onClick={() => alert("foi no coração")}
             />
+
+            {anunciosFavoritos.includes(anuncio.idAnuncio) && (
+              <FcLike className="productCard__cart" />
+            )}
+
             {/* <FaRegBookmark className={"productCard__wishlist"} />
             <FaFireAlt className={"productCard__fastSelling"} /> */}
 
             <div className="productCard__content">
-              <h3
-                className="productName"
-                style={{
-                  whiteSspace: "pre-wrap",
-                  overflowWrap: "break-word",
-                  maxWidth: "240px",
-                }}
-              >
-                {anuncio.tituloAnuncio}
-              </h3>
               <div className="displayStack__1">
                 <div className="productPrice">
                   R${anuncio.valorServicoAnuncio}/{anuncio.horasServicoAnuncio}{" "}
                   {anuncio.valorServicoAnuncio > 1 ? "Horas" : "Hora"}
                 </div>
-                <div className="productSales">
+                {/* <div className="productSales">
                   {anuncio.totalSales} units sold
-                </div>
+                </div> */}
               </div>
               <div className="displayStack__2">
                 <div className="productRating">
@@ -80,14 +71,31 @@ const Cards = ({ anuncios }) => {
                     }
                   />
                 </div>
-                <div className="productTime">{anuncio.timeLeft} days left</div>
+                <div className="productTime">
+                  {anuncio.timeLeft} Pessoa que cadastrou
+                </div>
               </div>
-              <input
+              <div>
+                <h3
+                  className="productName"
+                  // style={{
+                  //   whiteSspace: "pre-wrap",
+                  //   overflowWrap: "break-word",
+                  //   maxWidth: "240px",
+                  //   maxHeight: "70px",
+                  //   overflow: "hidden",
+                  //   textOverflow: "ellipsis"
+                  // }}
+                >
+                  {anuncio.tituloAnuncio}
+                </h3>
+              </div>
+              {/* <input
                 type="button"
                 value="Ver Anúncio"
                 className="btn"
                 style={{ width: "100%", backgroundColor: "#ff6500", color: "#FFFFFF" }}
-              />
+              /> */}
             </div>
           </div>
         ))}

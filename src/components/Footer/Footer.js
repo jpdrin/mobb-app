@@ -1,5 +1,6 @@
 import React from "react";
 import { AiOutlineInstagram } from "react-icons/ai";
+import { ImLinkedin2 } from "react-icons/im";
 import "./Footer.css";
 import { FaBootstrap } from "react-icons/fa";
 
@@ -37,11 +38,12 @@ const MobbFooter = () => {
             <div className="social-links">
               {/* <!--<a href="#"><i className="fab fa-facebook-f"></i></a>
   	 				<a href="#"><i className="fab fa-twitter"></i></a>--> */}
-              <a href="#">
-                <i className="fab fa-instagram"></i>                
-                {/* <AiOutlineInstagram /> */}
+              <a href="#" >
+                {/* <i className="fab fa-instagram"></i>                 */}
+                <AiOutlineInstagram size={35}  />
               </a>
               <a href="#">
+              <ImLinkedin2 size={33} />
                 <i className="fab fa-linkedin-in"></i>
               </a>
             </div>

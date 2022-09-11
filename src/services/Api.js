@@ -155,3 +155,7 @@ export const dadosComentarios = async (idAnuncio) => {
 export const verificaAnuncios = async (idEstado, idCidade, idCategoriaAnuncio) => {
   return Api.get(`Anuncios/verifica-anuncios/${idEstado}/${idCidade}/${idCategoriaAnuncio}`);
 }
+
+export const dadosAnunciosFavoritos = async (idPessoa) => {
+  return Api.get(`Anuncios/anuncios-favoritos/${idPessoa}`);
+}
