@@ -1,0 +1,20 @@
+.paginacao{
+  display: flex;
+  list-style: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginacao li + li {
+  margin-left: 1rem;
+}
+
+.paginacao__item--ativo {
+  background: none;
+  font-weight: bold;
+  border: none;
+}
+
+.paginacao__item--ativo:focus {
+  outline: none;
+}

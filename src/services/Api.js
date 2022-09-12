@@ -113,6 +113,16 @@ export const AtualizaAnuncio = async (json) => {
     });
 };
 
+export const InsereAnuncioFavorito = async (idPessoa, idAnuncio) => {
+  return Api.post(`Anuncios/insere-anuncio-favorito/${idPessoa}/${idAnuncio}`)
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    })
+}
+
 export const deletaAnuncio = async (idAnuncio) => {
   return Api.delete(`Anuncios/deleta-anuncio/${idAnuncio}`)
     .then(() => {
@@ -123,6 +133,16 @@ export const deletaAnuncio = async (idAnuncio) => {
       return false;
     });
 };
+
+export const removeAnuncioFavorito = async (idPessoa, idAnuncio) => {
+  return Api.delete(`Anuncios/remove-anuncio-favorito/${idPessoa}/${idAnuncio}`)
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+}
 
 //Listagem dos Países
 export const listaPaises = async () => {
@@ -157,5 +177,9 @@ export const verificaAnuncios = async (idEstado, idCidade, idCategoriaAnuncio) =
 }
 
 export const dadosAnunciosFavoritos = async (idPessoa) => {
-  return Api.get(`Anuncios/anuncios-favoritos/${idPessoa}`);
+  return Api.get(`Anuncios/anuncios-favoritos/${idPessoa}`);  
+}
+
+export const verificaAnuncioFavorito = async (idPessoa, idAnuncio) => {
+  return Api.get(`Anuncios/verifica-anuncio-favorito/${idPessoa}/${idAnuncio}`);
 }

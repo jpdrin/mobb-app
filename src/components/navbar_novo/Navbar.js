@@ -32,6 +32,9 @@ const Navbar = () => {
             <a href='/meus-anuncios'> <RiFolderUserFill size={30} style={{ marginTop: '-10px' }} /> Meus Anúncios</a>
           </li>
           <li>
+            <a href='/meus-anuncios'> <RiFolderUserFill size={30} style={{ marginTop: '-10px' }} /> Anúncios Favoritos</a>
+          </li>
+          <li>
             <a href='/login'> <RiLoginBoxFill size={30} style={{ marginTop: '-10px' }} /> Entrar</a>
           </li>
           <li>

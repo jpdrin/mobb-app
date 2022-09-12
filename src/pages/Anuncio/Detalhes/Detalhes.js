@@ -5,6 +5,9 @@ import {
   dadosAnuncio,
   dadosAnuncioImagens,
   verificaTokenValido,
+  InsereAnuncioFavorito,
+  verificaAnuncioFavorito,
+  removeAnuncioFavorito
 } from "../../../services/Api";
 import CarouselAnuncio from "../../../components/Carousel/Carousel";
 import { Container, Row, Col } from "reactstrap";
@@ -16,6 +19,8 @@ import Navbar from "../../../components/navbar_novo/Navbar";
 import MobbFooter from "../../../components/Footer/Footer";
 import { SistemaContext } from "../../../contexts/Aplicacao/sistema";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineHeart } from "react-icons/ai";
+import {FcLike} from "react-icons/fc";
 
 const data = [
   {
@@ -45,6 +50,7 @@ const Detalhes = () => {
   const [anuncioImagens, setAnuncioImagens] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [tokenValido, setTokenValido] = useState(false);
+  const [anuncioFavorito, setAnuncioFavorito] = useState(false);
   const { usuario } = useContext(SistemaContext);
   // const navigate = useNavigate();
 
@@ -52,8 +58,12 @@ const Detalhes = () => {
     console.log("teste");
     listaAnuncio(decryptId(idAnuncio));
     listaAnuncioImagens(decryptId(idAnuncio));
-    validaToken();
+    validaToken();    
   }, []);
+
+  useEffect(() => {
+    validaAnuncioFavorito();
+  }, [usuario])
 
   const listaAnuncio = async (idAnuncio) => {
     const response = await dadosAnuncio(idAnuncio);
@@ -81,6 +91,34 @@ const Detalhes = () => {
 
     setTokenValido(response.data);
   };
+
+  const validaAnuncioFavorito = async () => {
+    const idPessoa = usuario !== null ? usuario.idPessoa : 0; //Pois o ID não vem logo de cara, ele demora "um pouco"
+
+    const response = await verificaAnuncioFavorito(idPessoa,
+                                                   decryptId(idAnuncio));
+
+    setAnuncioFavorito(response.data);
+  }
+
+  const insereFavorito = async () => {
+    const response = await InsereAnuncioFavorito(usuario.idPessoa,
+                                                 decryptId(idAnuncio));
+    if (response){
+      alert('Anuncio Favoritado');
+    }
+
+    validaAnuncioFavorito();
+  }
+
+  const removeFavorito = async () => {
+    const response = await removeAnuncioFavorito(usuario.idPessoa,
+                                                 decryptId(idAnuncio));
+
+    if (response){
+      setAnuncioFavorito(false);
+    }
+  }
 
   console.log(anuncio);
 
@@ -125,7 +163,10 @@ const Detalhes = () => {
                   </a>
                 </button>
                 <button onClick={() => setOpenModal(true)}>Abrir</button>
-                {(usuario && tokenValido) && <button onClick={() => {}}>Favoritar</button>}
+                {(usuario && tokenValido) && (
+                  // <button onClick={() => insereFavorito()}>Favoritar</button>
+                  anuncioFavorito ? <FcLike size={35} onClick={() => removeFavorito()} /> : <AiOutlineHeart size={35} onClick={() => insereFavorito()} />
+                )}
                 <button onClick={() => {}}>Voltar</button>
                 <Comentarios
                   openModal={openModal}

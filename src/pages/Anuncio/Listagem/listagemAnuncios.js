@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
 import "../../../App.css";
-import { Api, dadosAnunciosFavoritos } from "../../../services/Api";
+import {
+  Api,
+  dadosAnunciosFavoritos,
+  verificaTokenValido,
+} from "../../../services/Api";
 import { SistemaContext } from "../../../contexts/Aplicacao/sistema";
 import Cards from "../../../components/Cards/Cards";
 import { useParams } from "react-router-dom";
@@ -78,20 +82,24 @@ const ListagemAnuncios = () => {
   }
 
   const listaAnunciosFavoritos = async () => {
-    const idPessoa = usuario !== null ? usuario.idPessoa : 0;
+    const response = await verificaTokenValido();
 
-    const response = await dadosAnunciosFavoritos(idPessoa);
+    if (response.data) {
+      const idPessoa = usuario !== null ? usuario.idPessoa : 0;
 
-    if (response) {
-      setAnunciosFavoritos(response.data);
+      let response = await dadosAnunciosFavoritos(idPessoa);
+
+      if (response) {
+        setAnunciosFavoritos(response.data);
+      }
+
+      const id = [];
+      response.data.forEach((value) => {
+        id.push(value.idAnuncio);
+      });
+
+      setIdAnunciosFavoritos(id);
     }
-
-    const id = [];
-    response.data.forEach((value) => {
-      id.push(value.idAnuncio);
-    });
-
-    setIdAnunciosFavoritos(id);
   };
 
   console.log("favoritos", anunciosFavoritos);
