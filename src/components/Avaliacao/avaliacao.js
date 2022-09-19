@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
+import {RiUserStarFill} from "react-icons/ri";
 
 const labels = {
   1: "Horrível",
@@ -20,12 +21,15 @@ const Avaliacao = () => {
   }
 
   return (
+    <div>
+
     <Box
       sx={{
         width: 200,
         display: "flex",
         alignItems: "center",
-        paddingBottom: "5%"
+        // justifyContent: "center"
+        // paddingBottom: "10px"
       }}
     >      
       <Rating
@@ -43,7 +47,7 @@ const Avaliacao = () => {
         }}
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
       />
-      <div style={{paddingLeft: "30px"}}>Avaliações</div>
+      {/* <div style={{paddingLeft: "30px"}}>Avaliações</div> */}
       {valor !== null && (
         <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : valor]}</Box>
       )}            
@@ -54,8 +58,9 @@ const Avaliacao = () => {
         precision={0.5}
         size="large"
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-      /> */}
-    </Box>
+      /> */}      
+    </Box>    
+    </div>
   );
 };
 

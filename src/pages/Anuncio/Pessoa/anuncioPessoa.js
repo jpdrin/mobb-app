@@ -40,7 +40,7 @@ const AnuncioPessoa = () => {
 
     if (response){
       navigate("/");
-    }    
+    }
   }
 
   console.log(anuncios);

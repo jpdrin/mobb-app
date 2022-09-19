@@ -48,8 +48,8 @@ const Cards = ({ anuncios, anunciosFavoritos }) => {
             <div className="productCard__content">
               <div className="displayStack__1">
                 <div className="productPrice">
-                  R${anuncio.valorServicoAnuncio}/{anuncio.horasServicoAnuncio}{" "}
-                  {anuncio.valorServicoAnuncio > 1 ? "Horas" : "Hora"}
+                  R${anuncio.valorServicoAnuncio} / {anuncio.horasServicoAnuncio}{" "}
+                  {anuncio.horasServicoAnuncio > 1 ? "Horas" : "Hora"}
                 </div>
                 {/* <div className="productSales">
                   {anuncio.totalSales} units sold

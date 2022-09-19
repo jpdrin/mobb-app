@@ -10,3 +10,71 @@
   white-space: "pre-wrap";
   overflow-wrap: break-word;  
 }
+
+.detalhesPage .car__info .enviar-msg {
+  text-decoration: none;
+  color: white;  
+}
+
+.detalhesPage .car__info .interacoes {
+  display: flex; 
+  flex-direction: column;
+}
+
+.detalhesPage .car__info .interacoes .btn-voltar {
+  margin-top: 16%;
+}
+
+.detalhesPage .car__info .avaliacao-container{
+  padding-top: 5%;
+  padding-left: 17%;
+}
+
+.detalhesPage .car__info .avaliacao-container{
+  padding-top: 5%;
+  padding-left: 25%;
+}
+
+.detalhesPage .car__info .avaliacao-text{  
+  padding-left: 18%;
+}
+
+@media screen and (max-width: 992px) {
+  .detalhesPage .car__info .interacoes {
+    display: flex; 
+    flex-direction: row;
+  }
+
+  .detalhesPage .car__info .interacoes .btn-voltar {
+    margin-top: 0;
+  }
+
+  .detalhesPage .car__info .avaliacao-container{
+    padding-top: 5%;
+    padding-left: 0;
+  }
+
+  .detalhesPage .car__info .avaliacao-text{  
+    padding-left: 8%;
+  }
+}
+
+@media screen and (max-width: 504px) {
+  .detalhesPage .car__info .interacoes {
+    display: flex; 
+    flex-direction: column;    
+  }
+
+  .detalhesPage .car__info .interacoes .btn-voltar {
+    margin-top: 0;
+  }
+
+  .detalhesPage .car__info .avaliacao-container{
+    padding-top: 5%;
+    padding-left: 30%;
+  }
+  
+  .detalhesPage .car__info .avaliacao-text{  
+    padding-left: 18%;
+  }
+}

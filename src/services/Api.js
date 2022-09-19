@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const Api = axios.create({
   baseURL: "https://localhost:7208/api/",
-  //http://mobbwebapi001-env.eba-ivckwg2p.us-east-1.elasticbeanstalk.com/api
+  // baseURL: "http://mobbwebapi.us-east-1.elasticbeanstalk.com/api/",  
 });
 
 //Login

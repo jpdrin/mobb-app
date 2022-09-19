@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Carousel } from "react-carousel-minimal";
 
 const CarouselAnuncio = ({ data }) => {
@@ -11,38 +11,41 @@ const CarouselAnuncio = ({ data }) => {
     fontWeight: "bold",
   };
 
+  useEffect(() => { //Remove a classe Fade do boostrap pois está dando conflito        
+      
+      let timerId = setTimeout(() => {      
+         data.forEach(() => {
+          if (document.querySelector(".fade"))
+            document.querySelector(".fade").classList.remove('fade');
+         })        
+      }, 15);
+
+      return () => clearTimeout(timerId);
+  }, [data]);
+
   return (
-    <div>
-      {/* <div style={{ textAlign: "center" }}> */}
-      <div>
-        {/* <h2>Faço pinturas em geral de tudo</h2>
-        <p>
-          Easy to use, responsive and customizable carousel component for React
-          Projects.
-        </p> */}
-        <div
-          // style={{
-          //   padding: "0 20px",
-          // }}
-        >
+    <div>      
+      <div>        
+        <div>
           <Carousel
-            data={data}
+            data={data}                        
             automatic={false}
             time={2000}
+            className="form-control"
             width="1000px"
             height="600px"
-            slideNumber={true}
+            slideNumber={true}            
             captionStyle={captionStyle}
             radius="10px"            
             slideNumberStyle={slideNumberStyle}
-            captionPosition="bottom"            
+            captionPosition="bottom"                          
             dots={true}
             pauseIconColor="white"
             pauseIconSize="40px"
             slideBackgroundColor="darkgrey"
             slideImageFit="cover"
             thumbnails={true}
-            showNavBtn={true}                                                                                    
+            showNavBtn={true}
             thumbnailWidth="100px"
             style={{paddingBottom: "2%", maxWidth: "850px"}}
             // style={{

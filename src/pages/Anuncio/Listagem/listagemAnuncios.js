@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useEffect, useMemo, useContext, useRef } from "react";
 import "../../../App.css";
 import {
   Api,
@@ -66,6 +66,7 @@ const ListagemAnuncios = () => {
   const [carregando, setCarregando] = useState(false);
   const { idEstado, idCidade, idCategoriaAnuncio } = useParams();
   const { usuario } = useContext(SistemaContext);
+  const ServicesRefTopo = useRef(document.getElementById('navMobb'));
 
   async function Dados() {
     const response = await Api.get(
@@ -108,6 +109,7 @@ const ListagemAnuncios = () => {
     setCarregando(true);
     Dados();
     setCarregando(false);
+    console.log("AAAAAAAA");
   }, [offset]);
 
   useEffect(() => {
@@ -119,8 +121,13 @@ const ListagemAnuncios = () => {
       decryptId(idCategoriaAnuncio)
     );
 
-    console.log("opaaa");
-  }, []);
+    if (ServicesRefTopo.current){ //Verifica se o elemento existe para referência-lo
+      window.scrollTo({
+        top: ServicesRefTopo.current.offsetTop,
+        behavior: "smooth",
+      }); 
+    }    
+  }, []);  
 
   useEffect(() => {
     //Precisou deste useEffet pois só deve listar quando retornar os dados do Usuário, pois dependendo ele não carrega de cara, então tem que ficar monitorando
