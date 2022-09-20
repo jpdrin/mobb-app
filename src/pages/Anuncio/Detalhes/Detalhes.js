@@ -27,6 +27,8 @@ import { MdOutlineComment } from "react-icons/md";
 import { BsHeartFill } from "react-icons/bs";
 import { FaHeartBroken } from "react-icons/fa";
 import Avaliar from "../../../components/Modal/Avaliacoes/Avaliar";
+import { Rating } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
 
 const Detalhes = () => {
   const { idAnuncio } = useParams();
@@ -160,13 +162,30 @@ const Detalhes = () => {
                         }) +
                           " a cada " +
                           anuncio.horasServicoAnuncio +
-                          (anuncio.horasServicoAnuncio > 1 ? " Horas" : " Hora")}
+                          (anuncio.horasServicoAnuncio > 1
+                            ? " Horas"
+                            : " Hora")}
                     </span>
                   </div>
                 </h6>
                 <div className="avaliacao-container">
-                  <h1 className="avaliacao-text">4.7</h1>
-                  <Avaliacao />
+                  <h1 className="avaliacao-text">{anuncio.avaliacaoAnuncio ? anuncio.avaliacaoAnuncio.toFixed(1) : 0}</h1>
+                  {/* <Avaliacao /> */}                  
+                  {anuncio && (
+                    <Rating
+                      name="text-feedback"
+                      value={anuncio.avaliacaoAnuncio ? anuncio.avaliacaoAnuncio : 0}
+                      readOnly
+                      precision={0.1}
+                      size="large"
+                      emptyIcon={
+                        <StarIcon
+                          style={{ opacity: 0.55 }}
+                          fontSize="inherit"
+                        />
+                      }
+                    />
+                  )}
                 </div>
                 <div className=" d-flex  gap-5 mb-4 mt-3 interacoes">
                   <span className=" d-flex align-items-center gap-2">
@@ -175,7 +194,10 @@ const Detalhes = () => {
                 </div>
 
                 <div className=" d-flex  gap-1 mb-4 mt-3 interacoes">
-                  <button onClick={() => setOpenModalAvaliar(true)} className="btn btn-primary">
+                  <button
+                    onClick={() => setOpenModalAvaliar(true)}
+                    className="btn btn-primary"
+                  >
                     <RiUserStarFill size={25} /> Avaliação
                   </button>
                   {usuario &&
@@ -224,7 +246,14 @@ const Detalhes = () => {
                   setOpenModal={setOpenModal}
                   idAnuncio={decryptId(idAnuncio)}
                 />
-                <Avaliar openModal={openModalAvaliar} setOpenModal={setOpenModalAvaliar} />
+                {usuario && (
+                  <Avaliar
+                    openModal={openModalAvaliar}
+                    setOpenModal={setOpenModalAvaliar}
+                    idAnuncio={decryptId(idAnuncio)}
+                    idPessoa={usuario.idPessoa}
+                  />
+                )}
               </div>
             </Col>
             <Col lg="8">

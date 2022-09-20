@@ -48,7 +48,8 @@ const Cards = ({ anuncios, anunciosFavoritos }) => {
             <div className="productCard__content">
               <div className="displayStack__1">
                 <div className="productPrice">
-                  R${anuncio.valorServicoAnuncio} / {anuncio.horasServicoAnuncio}{" "}
+                  R${anuncio.valorServicoAnuncio} /{" "}
+                  {anuncio.horasServicoAnuncio}{" "}
                   {anuncio.horasServicoAnuncio > 1 ? "Horas" : "Hora"}
                 </div>
                 {/* <div className="productSales">
@@ -60,16 +61,24 @@ const Cards = ({ anuncios, anunciosFavoritos }) => {
                   {/* {[...Array(anuncios.rating)].map((index) => (
                     <FaStar id={index + 1} key={index} />
                   ))} */}
-                  <Rating
-                    name="text-feedback"
-                    value={0}
-                    readOnly
-                    precision={0.5}
-                    size="small"
-                    emptyIcon={
-                      <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
-                    }
-                  />
+                  {anuncio.avaliacaoAnuncio ? (
+                    <Rating
+                      key={index}
+                      name="text-feedback"
+                      value={anuncio.avaliacaoAnuncio}
+                      readOnly
+                      precision={0.5}
+                      size="small"
+                      emptyIcon={
+                        <StarIcon
+                          style={{ opacity: 0.55 }}
+                          fontSize="inherit"
+                        />
+                      }
+                    />
+                  ) : (
+                    <span>Nenhuma</span>
+                  )}
                 </div>
                 <div className="productTime">
                   {anuncio.timeLeft} Pessoa que cadastrou

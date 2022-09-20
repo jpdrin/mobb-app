@@ -2,36 +2,32 @@ import React, { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
-import {RiUserStarFill} from "react-icons/ri";
+import { RiUserStarFill } from "react-icons/ri";
+import "./avaliacao.css";
 
-const labels = {
-  1: "Horrível",
-  2: "Péssimo",
-  3: "Mediano",
-  4: "Bom",
-  5: "Excelente",
+const labels = {  
+  1: "1",
+  2: "2",
+  3: "3",
+  4: "4",
+  5: "5",
 };
 
-const Avaliacao = () => {
-  const [valor, setValue] = useState(2);
-  const [hover, setHover] = useState(-1);
+const Avaliacao = ({valor, setValor, hover, setHover}) => {  
 
-  function getLabelText(value) {
+  function getLabelText(value) {    
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
-
+    
   return (
-    <div>
+    <div className="avaliacao">
+      {valor !== null ? (
+        <span style={{ fontSize: "35px", fontWeight: "bold" }}>
+          {labels[hover !== -1 ? hover : valor]}
+        </span>
+      ) :
+      <span style={{ fontSize: "35px", fontWeight: "bold" }}>0</span>}
 
-    <Box
-      sx={{
-        width: 200,
-        display: "flex",
-        alignItems: "center",
-        // justifyContent: "center"
-        // paddingBottom: "10px"
-      }}
-    >      
       <Rating
         name="hover-feedback"
         value={valor}
@@ -40,7 +36,7 @@ const Avaliacao = () => {
         size="large"
         getLabelText={getLabelText}
         onChange={(event, newValue) => {
-          setValue(newValue);
+          setValor(newValue);
         }}
         onChangeActive={(event, newHover) => {
           setHover(newHover);
@@ -48,18 +44,14 @@ const Avaliacao = () => {
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
       />
       {/* <div style={{paddingLeft: "30px"}}>Avaliações</div> */}
-      {valor !== null && (
-        <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : valor]}</Box>
-      )}            
-      {/* <Rating
+       <Rating
         name="text-feedback"
-        value={0}
+        value={5}
         readOnly
-        precision={0.5}
+        precision={0.1}
         size="large"
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-      /> */}      
-    </Box>    
+      /> 
     </div>
   );
 };

@@ -123,6 +123,16 @@ export const InsereAnuncioFavorito = async (idPessoa, idAnuncio) => {
     })
 }
 
+export const InsereAvaliacaoAnuncio = async (idAnuncio, idPessoa, avaliacao) => {
+  return Api.post(`Anuncios/insere-avaliacao-anuncio/${idAnuncio}/${idPessoa}/${avaliacao}`)
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    })
+}
+
 export const deletaAnuncio = async (idAnuncio) => {
   return Api.delete(`Anuncios/deleta-anuncio/${idAnuncio}`)
     .then(() => {
@@ -143,6 +153,7 @@ export const removeAnuncioFavorito = async (idPessoa, idAnuncio) => {
       return false;
     });
 }
+
 
 //Listagem dos Países
 export const listaPaises = async () => {
