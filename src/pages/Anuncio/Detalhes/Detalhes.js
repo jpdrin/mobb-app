@@ -168,9 +168,8 @@ const Detalhes = () => {
                     </span>
                   </div>
                 </h6>
-                <div className="avaliacao-container">
-                  <h1 className="avaliacao-text">{anuncio.avaliacaoAnuncio ? anuncio.avaliacaoAnuncio.toFixed(1) : 0}</h1>
-                  {/* <Avaliacao /> */}                  
+                <div className="avaliacao-text">
+                  <h1>{anuncio.avaliacaoAnuncio ? anuncio.avaliacaoAnuncio.toFixed(1) : "N/A"}</h1>
                   {anuncio && (
                     <Rating
                       name="text-feedback"

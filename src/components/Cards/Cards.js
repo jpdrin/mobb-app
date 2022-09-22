@@ -77,7 +77,7 @@ const Cards = ({ anuncios, anunciosFavoritos }) => {
                       }
                     />
                   ) : (
-                    <span>Nenhuma</span>
+                    <span>N/A</span>
                   )}
                 </div>
                 <div className="productTime">
