@@ -5,17 +5,26 @@ import Avaliacao from "../../Avaliacao/avaliacao";
 import { InsereAvaliacaoAnuncio } from "../../../services/Api";
 import swal from "sweetalert";
 
-const Avaliar = ({ openModal, setOpenModal, idAnuncio, idPessoa }) => {
+const Avaliar = ({ openModal, setOpenModal, idAnuncio, idPessoa, avaliacaoAnterior }) => {
   const [avaliacao, setAvaliacao] = useState(2);
   const [hover, setHover] = useState(-1);
 
   const insereAvaliacao = async () => {    
-
+    if (avaliacao === 0){
+      swal({
+        title: "Erro!",
+        text: "Por favor, insira uma nota válida!",
+        icon: "error",
+        button: "Fechar",
+      });
+      return;
+    }    
+      
     console.log(avaliacao);
     const response = await InsereAvaliacaoAnuncio(
       idAnuncio,
       idPessoa,
-      avaliacao
+      avaliacao === null ? 0 : avaliacao //Se o valor da Avaliação for NULL, é porque definiu 0
     );
 
     if (response) {
@@ -59,6 +68,8 @@ const Avaliar = ({ openModal, setOpenModal, idAnuncio, idPessoa }) => {
               setValor={setAvaliacao}
               hover={hover}
               setHover={setHover}
+              avaliacaoAnterior={avaliacaoAnterior}
+              openModal={openModal}
             />            
           </Form>
         </Modal.Body>

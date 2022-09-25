@@ -31,6 +31,7 @@ export const SistemaProvider = ({ children }) => {
     }
 
     setCarregando(false);
+    console.log('aajjuu')
   }, []);
 
   console.log("recu 2", usuario);

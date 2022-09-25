@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 export const Api = axios.create({
   baseURL: "https://localhost:7208/api/",
   // baseURL: "http://mobbwebapi.us-east-1.elasticbeanstalk.com/api/",  
@@ -154,6 +155,15 @@ export const removeAnuncioFavorito = async (idPessoa, idAnuncio) => {
     });
 }
 
+export const deletaComentarioAnuncio = async (idComentario) => {
+  return Api.delete(`Anuncios/deleta-comentario-anuncio/${idComentario}`)
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+}
 
 //Listagem dos Países
 export const listaPaises = async () => {
@@ -193,4 +203,8 @@ export const dadosAnunciosFavoritos = async (idPessoa) => {
 
 export const verificaAnuncioFavorito = async (idPessoa, idAnuncio) => {
   return Api.get(`Anuncios/verifica-anuncio-favorito/${idPessoa}/${idAnuncio}`);
+}
+
+export const avaliacaoAnuncioPessoa = async (idAnuncio, idPessoa) => {
+  return Api.get(`Anuncios/avaliacao-anuncio-pessoa/${idAnuncio}/${idPessoa}`);
 }

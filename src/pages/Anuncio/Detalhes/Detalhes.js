@@ -8,6 +8,7 @@ import {
   InsereAnuncioFavorito,
   verificaAnuncioFavorito,
   removeAnuncioFavorito,
+  avaliacaoAnuncioPessoa
 } from "../../../services/Api";
 import CarouselAnuncio from "../../../components/Carousel/Carousel";
 import { Container, Row, Col } from "reactstrap";
@@ -38,13 +39,14 @@ const Detalhes = () => {
   const [openModalAvaliar, setOpenModalAvaliar] = useState(false);
   const [tokenValido, setTokenValido] = useState(false);
   const [anuncioFavorito, setAnuncioFavorito] = useState(false);
-  const { usuario } = useContext(SistemaContext);
+  const [avaliacaoPessoa, setAvaliacaoPessoa] = useState(0);  
+  const { usuario} = useContext(SistemaContext);
   const ServicesRefTopo = useRef(document.getElementById("navMobb"));
   const navigate = useNavigate();
 
   useEffect(() => {
     console.log("teste");
-    listaAnuncio(decryptId(idAnuncio));
+    /*listaAnuncio(decryptId(idAnuncio));*/
     listaAnuncioImagens(decryptId(idAnuncio));
     validaToken();
 
@@ -57,9 +59,32 @@ const Detalhes = () => {
     }
   }, []);
 
+  useEffect(() => {    
+    if (usuario){
+      retornaAvaliacaoPessoa();
+    }     
+    
+    if (!openModalAvaliar){
+      listaAnuncio(decryptId(idAnuncio));    
+      console.log('listou');
+    }
+    
+          
+  }, [openModalAvaliar]);
+
+
   useEffect(() => {
-    validaAnuncioFavorito();
+    if (usuario){
+      validaAnuncioFavorito();
+      retornaAvaliacaoPessoa();
+    }    
   }, [usuario]);
+  
+  const retornaAvaliacaoPessoa = async () => {
+    const response = await avaliacaoAnuncioPessoa(decryptId(idAnuncio), 
+                                                  usuario === null ? 0 : usuario.idPessoa);
+    setAvaliacaoPessoa(response.data);
+  }
 
   const listaAnuncio = async (idAnuncio) => {
     const response = await dadosAnuncio(idAnuncio);
@@ -120,11 +145,9 @@ const Detalhes = () => {
     if (response) {
       setAnuncioFavorito(false);
     }
-  };
+  };  
 
-  console.log(anuncio);
-
-  console.log(anuncioImagens);
+  console.log(anuncio);  
 
   return (
     <>
@@ -169,11 +192,19 @@ const Detalhes = () => {
                   </div>
                 </h6>
                 <div className="avaliacao-text">
-                  <h1>{anuncio.avaliacaoAnuncio ? anuncio.avaliacaoAnuncio.toFixed(1) : "N/A"}</h1>
+                  <h1>
+                    {anuncio.avaliacaoAnuncio !== null
+                      ? anuncio.avaliacaoAnuncio > 0
+                        ? anuncio.avaliacaoAnuncio.toFixed(1)
+                        : 0
+                      : "N/A"}
+                  </h1>
                   {anuncio && (
                     <Rating
                       name="text-feedback"
-                      value={anuncio.avaliacaoAnuncio ? anuncio.avaliacaoAnuncio : 0}
+                      value={
+                        anuncio.avaliacaoAnuncio ? anuncio.avaliacaoAnuncio : 0
+                      }
                       readOnly
                       precision={0.1}
                       size="large"
@@ -193,12 +224,14 @@ const Detalhes = () => {
                 </div>
 
                 <div className=" d-flex  gap-1 mb-4 mt-3 interacoes">
-                  <button
-                    onClick={() => setOpenModalAvaliar(true)}
-                    className="btn btn-primary"
-                  >
-                    <RiUserStarFill size={25} /> Avaliação
-                  </button>
+                  {usuario && tokenValido && (
+                    <button
+                      onClick={() => setOpenModalAvaliar(true)}
+                      className="btn btn-primary"
+                    >
+                      <RiUserStarFill size={25} /> Avaliação
+                    </button>
+                  )}
                   {usuario &&
                     tokenValido &&
                     (anuncioFavorito ? (
@@ -244,6 +277,8 @@ const Detalhes = () => {
                   openModal={openModal}
                   setOpenModal={setOpenModal}
                   idAnuncio={decryptId(idAnuncio)}
+                  realizaComentario={tokenValido}
+                  idPessoaLogada={usuario ? usuario.idPessoa : 0}
                 />
                 {usuario && (
                   <Avaliar
@@ -251,6 +286,7 @@ const Detalhes = () => {
                     setOpenModal={setOpenModalAvaliar}
                     idAnuncio={decryptId(idAnuncio)}
                     idPessoa={usuario.idPessoa}
+                    avaliacaoAnterior={avaliacaoPessoa}
                   />
                 )}
               </div>

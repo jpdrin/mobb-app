@@ -4,10 +4,7 @@ import Home from "./pages/Home/Home";
 import Detalhes from "./pages/Anuncio/Detalhes/Detalhes";
 import LoginPage from "./pages/Login/Login";
 import CadastroAnuncio from "./pages/Anuncio/Cadastro/Cadastro.js";
-import {
-  SistemaProvider,
-  SistemaContext,
-} from "./contexts/Aplicacao/sistema";
+import { SistemaProvider, SistemaContext } from "./contexts/Aplicacao/sistema";
 import CadastroPessoa from "./pages/Pessoa/Cadastro/cadastro";
 
 import { CadastroContext, CadastroProvider } from "./contexts/Anuncio/cadastro";
@@ -16,9 +13,9 @@ import AnuncioPessoa from "./pages/Anuncio/Pessoa/anuncioPessoa";
 import Navbar from "./components/navbar_novo/Navbar";
 import ListagemAnuncios from "./pages/Anuncio/Listagem/listagemAnuncios";
 import MobbFooter from "./components/Footer/Footer";
+import MeuPerfil from "./pages/Pessoa/MeuPerfil/MeuPerfil";
 
 const AppRoutes = () => {
-  
   //Verifica se está autenticado, senão estiver volta pro login, se estiver vai para onde deseja
   const Private = ({ children }) => {
     const { autenticado, carregando, usuario } = useContext(SistemaContext);
@@ -27,18 +24,17 @@ const AppRoutes = () => {
       return <div className="loading">Carregando..</div>;
     }
 
-    console.log("aut",autenticado);
+    console.log("aut", autenticado);
     if (!autenticado) {
       return <Navigate to="/login" />;
     }
-    
+
     return children;
   };
 
   return (
-
     <BrowserRouter>
-    {/* <Navbar /> */}
+      {/* <Navbar /> */}
       <SistemaProvider>
         <Routes>
           <Route path="/" exact element={<Home></Home>} />
@@ -71,6 +67,15 @@ const AppRoutes = () => {
           />
 
           <Route
+            path="/meu-perfil"
+            element={
+              <Private>
+                <MeuPerfil></MeuPerfil>
+              </Private>
+            }
+          />
+
+          <Route
             path="/meus-anuncios/"
             element={
               <Private>
@@ -88,10 +93,12 @@ const AppRoutes = () => {
             }
           />
 
-          <Route path="/anuncios/:idEstado/:idCidade/:idCategoriaAnuncio"
-          element={<ListagemAnuncios></ListagemAnuncios>} />
+          <Route
+            path="/anuncios/:idEstado/:idCidade/:idCategoriaAnuncio"
+            element={<ListagemAnuncios></ListagemAnuncios>}
+          />
         </Routes>
-      </SistemaProvider> 
+      </SistemaProvider>
       {/* <MobbFooter />      */}
     </BrowserRouter>
   );

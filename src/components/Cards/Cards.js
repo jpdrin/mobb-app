@@ -61,7 +61,7 @@ const Cards = ({ anuncios, anunciosFavoritos }) => {
                   {/* {[...Array(anuncios.rating)].map((index) => (
                     <FaStar id={index + 1} key={index} />
                   ))} */}
-                  {anuncio.avaliacaoAnuncio ? (
+                  {anuncio.avaliacaoAnuncio !== null ? (
                     <Rating
                       key={index}
                       name="text-feedback"

@@ -37,7 +37,12 @@ const getArvore = (lista) => {
   return buildNodes(comentariosRaiz);
 };
 
-const ArvoreComentarios = ({ Comentarios, enviarResposta }) => {
+const ArvoreComentarios = ({
+  Comentarios,
+  enviarResposta,
+  idPessoaLogada,
+  excluirCometario,
+}) => {
   const arvore = useMemo(() => getArvore(Comentarios), [Comentarios]);
   const [comentarioResposta, setComentarioResposta] = useState("");
   const [idCaixaRespostaAtivo, setIdCaixaRespostaAtivo] = useState(null); //Ao passar o id Nulo, ele fecha a caixa de resposta, pois n foi chamada por nenhum item da arvore
@@ -57,23 +62,30 @@ const ArvoreComentarios = ({ Comentarios, enviarResposta }) => {
         <div className="info">
           <span className="comentarista">{comentario.nomePessoa}</span>
           <p>{comentario.comentario}</p>
-          <button className="acoes">
-            Excluir
-          </button>
-          <button
-            type="button"
-            className="acoes"
-            onClick={() => {
-              setComentarioResposta("");
-              setIdCaixaRespostaAtivo(
-                idCaixaRespostaAtivo === comentario.idComentarioAnuncio
-                  ? null
-                  : comentario.idComentarioAnuncio
-              );
-            }}
-          >
-            Responder
-          </button>          
+          {idPessoaLogada === comentario.idPessoa && (
+            <button
+              onClick={() => excluirCometario(comentario.idComentarioAnuncio)}
+              className="acoes"
+            >
+              Excluir
+            </button>
+          )}
+          {idPessoaLogada > 0 && (
+            <button
+              type="button"
+              className="acoes"
+              onClick={() => {
+                setComentarioResposta("");
+                setIdCaixaRespostaAtivo(
+                  idCaixaRespostaAtivo === comentario.idComentarioAnuncio
+                    ? null
+                    : comentario.idComentarioAnuncio
+                );
+              }}
+            >
+              Responder
+            </button>
+          )}
           {idCaixaRespostaAtivo === comentario.idComentarioAnuncio && (
             <div className="caixa-comentario">
               <textarea
@@ -106,10 +118,18 @@ const ArvoreComentarios = ({ Comentarios, enviarResposta }) => {
   };
 
   const renderizarLista = (lista) => {
-    return(
-      <ul className="arvore-comentarios">
-      {lista.map((comentario, index) => renderizarItem(comentario, index))}
-    </ul>
+    return (
+      <>
+        {lista.length > 0 ? (
+          <ul className="arvore-comentarios">
+            {lista.map((comentario, index) =>
+              renderizarItem(comentario, index)
+            )}
+          </ul>
+        ) : (
+          <span className="arvore-comentarios__no-comentarios">Ainda não há comentários para este anúncio.</span>
+        )}
+      </>
     );
   };
 

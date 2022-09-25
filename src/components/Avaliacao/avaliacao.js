@@ -5,7 +5,8 @@ import StarIcon from "@mui/icons-material/Star";
 import { RiUserStarFill } from "react-icons/ri";
 import "./avaliacao.css";
 
-const labels = {  
+const labels = { 
+  0: "N/A",
   1: "1",
   2: "2",
   3: "3",
@@ -13,7 +14,20 @@ const labels = {
   5: "5",
 };
 
-const Avaliacao = ({valor, setValor, hover, setHover}) => {  
+const Avaliacao = ({valor, setValor, hover, setHover, avaliacaoAnterior, openModal}) => {  
+  
+  useEffect(() => {
+    if (avaliacaoAnterior){
+      setValor(avaliacaoAnterior)
+    }else {
+      setValor(0);
+    }
+  }, []);  
+
+  useEffect(() => {
+    getLabelText(avaliacaoAnterior);
+    console.log("atessss", avaliacaoAnterior);
+  }, [openModal]);
 
   function getLabelText(value) {    
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
@@ -43,15 +57,6 @@ const Avaliacao = ({valor, setValor, hover, setHover}) => {
         }}
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
       />
-      {/* <div style={{paddingLeft: "30px"}}>Avaliações</div> */}
-       <Rating
-        name="text-feedback"
-        value={5}
-        readOnly
-        precision={0.1}
-        size="large"
-        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-      /> 
     </div>
   );
 };
