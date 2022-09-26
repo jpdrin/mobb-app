@@ -1,6 +1,7 @@
 import React, { useState, useCallback, createContext, useEffect } from "react";
 import { InsereImagem, deletaImagemCloudinary } from "../../services/Api";
 import Loading from "../../components/Loading/loading";
+import Swal from "sweetalert2";
 
 export const CadastroContext = createContext();
 
@@ -15,10 +16,22 @@ export const CadastroProvider = ({ children }) => {
     (arquivosAceitos, arquivosRejeitados) => {
       if (arquivosAceitos.length + imagens.length > 5) {
         console.log("MAXIMO DE IMAGENS PERMITIDO");
+        Swal.fire({
+          title: "Aviso!",
+          text: "É permitido adicionar apenas 5 imagens!",
+          icon: "error",
+          confirmButtonText: "Fechar",
+        });
       } else {
         if (arquivosAceitos.length > 5) {
           console.log(arquivosAceitos.length);
           console.log("MAXIMO DE IMAGENS PERMITIDO");
+          Swal.fire({
+            title: "Aviso!",
+            text: "É permitido adicionar apenas 5 imagens!",
+            icon: "error",
+            confirmButtonText: "Fechar",
+          });
         } else {
           //Convertendo para Base64
           arquivosAceitos.forEach((file) => {

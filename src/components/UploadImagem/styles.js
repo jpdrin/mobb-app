@@ -5,7 +5,7 @@ const dragActive = css`
 `;
 
 const dragReject = css`
-  border-color: #e57878;
+  border-color:  #e57878;
 `;
 
 export const Container = styled.div`
@@ -17,7 +17,7 @@ export const Container = styled.div`
 
 export const Content = styled.div`
   width: 100%;
-  max-width: 400px;
+  max-width: 700px;
   margin: 30px;
   background: #FFF;
   border-radius: 4px;
@@ -27,7 +27,7 @@ export const Content = styled.div`
 export const DropContainer = styled.div.attrs({
   className: "dropzone"
 })`
-  border: 1px dashed #ddd;
+  border: 1px dashed black;
   border-radius: 4px;
   cursor: pointer;
 

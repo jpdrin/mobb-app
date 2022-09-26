@@ -76,3 +76,32 @@ export const validaSenhaForte = (value) => {
   let retorno = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{7,}$/;
   return retorno.test(value);
 }
+
+export const mascaraMoeda = (valor) => {
+  const onlyDigits = valor
+    .split("")
+    .filter(s => /\d/.test(s))
+    .join("")
+    .padStart(3, "0")
+  const digitsFloat = onlyDigits.slice(0, -2) + "." + onlyDigits.slice(-2)
+  return maskCurrency(digitsFloat)
+}
+
+function maskCurrency(valor, locale = 'pt-BR', currency = 'BRL') {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency
+  }).format(valor)
+}
+
+
+export const apenasNumeros = (v) => {
+  return v.replace(/\D/g,"");
+}
+
+
+export const mascaraMoedaParaDecimalSQL = (valor) => {
+  valor = valor.replace("R$", "");
+  valor = valor.replace(/\.|\-/g, '');
+  return valor.replace(",", ".").trim();
+}

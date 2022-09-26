@@ -24,6 +24,12 @@ import TextField from "@mui/material/TextField";
 import { FormHelperText } from "@mui/material";
 import MobbSelect from "../../../components/MobbSelect/Select";
 import MobbPassword from "../../../components/MobbPassword/MobbPassword";
+import {
+  mascaraMoeda,
+  apenasNumeros,
+  telefoneDDIMask,
+  mascaraMoedaParaDecimalSQL,
+} from "../../../utils/mascarasUtils.js";
 
 const CadastroAnuncio = () => {
   const { logout, usuario, exibirAlertaSucesso, setExibirAlertaSucesso } =
@@ -55,19 +61,10 @@ const CadastroAnuncio = () => {
 
   const [erros, setErros] = useState({
     tituloAnuncio: "*Obrigatório",
-    sexoPessoa: "*Obrigatório",
     descricaoAnuncio: "*Obrigatório",
+    valorServicoAnuncio: "*Obrigatório",
     horasServicoAnuncio: "*Obrigatório",
-    telefoneCelularPessoa: "*Obrigatório",
-    dataNascimentoPessoa: "*Obrigatório",
-    codigoUsuarioPessoa: "*Obrigatório",
-    senhaUsuarioPessoa: "*Obrigatório",
   });
-
-  const generos = [
-    { value: "M", label: "Masculino" },
-    { value: "F", label: "Feminino" },
-  ];
 
   const estadosIniciais = [{ value: 999, label: "Exterior" }];
   const cidadesIniciais = [{ value: 1, label: "Queiroz" }];
@@ -98,8 +95,8 @@ const CadastroAnuncio = () => {
     setValores({ ...valores, idEstado: idEstado });
   }, [idEstado]);
 
-  console.log("agoraaaa", valores);
-  console.log("EDITAR IMAGENSS", imagensEditar);
+  // console.log("agoraaaa", valores);
+  // console.log("EDITAR IMAGENSS", imagensEditar);
 
   const recuperaDadosAnuncio = async (idAnuncio) => {
     const response = await dadosAnuncio(idAnuncio);
@@ -137,14 +134,18 @@ const CadastroAnuncio = () => {
     setCategorias(data);
   };
 
-  const handleLogout = () => {
-    logout();
-  };
-
   const atualizaValores = (e) => {
     if (e.hasOwnProperty("target")) {
       const { name, value } = e.target;
-      setValores({ ...valores, [name]: value });
+      if (name === "valorServicoAnuncio") {
+        setValores({ ...valores, [name]: mascaraMoeda(value) });
+      } else if (name === "horasServicoAnuncio") {
+        setValores({ ...valores, [name]: apenasNumeros(value) });
+      } else if (name === "telefoneContatoAnuncio") {
+        setValores({ ...valores, [name]: telefoneDDIMask(value) });
+      } else {
+        setValores({ ...valores, [name]: value });
+      }
     } else if (e.hasOwnProperty("idEstado")) {
       setValores({ ...valores, idCidade: e.value, nomeCidade: e.label });
     } else if (e.hasOwnProperty("ufEstado")) {
@@ -162,6 +163,52 @@ const CadastroAnuncio = () => {
         idCategoriaAnuncio: e.value,
         nomeCategoriaAnuncio: e.label,
       });
+    }
+
+    validaCampos(e);
+  };
+
+  const validaCampos = (e) => {
+    if (e.hasOwnProperty("target")) {
+      //Se tem target, é porque veio de um txt
+
+      const { name, value } = e.target;
+
+      switch (name) {
+        case "tituloAnuncio":
+          if (valores.tituloAnuncio.length < 4)
+            setErros({ ...erros, [name]: "Título Inválido!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "descricaoAnuncio":
+          if (valores.descricaoAnuncio.length < 9)
+            setErros({ ...erros, [name]: "Descrição Inválida!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "telefoneContatoAnuncio":
+          if (valores.telefoneContatoAnuncio.length < 19)
+            setErros({ ...erros, [name]: "Telefone Inválido!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "valorServicoAnuncio":
+          console.log(
+            "valor",
+            mascaraMoedaParaDecimalSQL(valores.valorServicoAnuncio)
+          );
+          if (mascaraMoedaParaDecimalSQL(value).length < 1)
+            setErros({ ...erros, [name]: "Insira um valor correto!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+
+        case "horasServicoAnuncio":
+          if (!valores.horasServicoAnuncio > 0)
+            setErros({ ...erros, [name]: "Informe uma quantidade!" });
+          else setErros({ ...erros, [name]: "Ok!" });
+          break;
+      }
     }
   };
 
@@ -205,7 +252,7 @@ const CadastroAnuncio = () => {
     if (retorno.OK) {
       setValores({ ...valores, urlImagensAnuncio: retorno.urlImagens });
       let jsonEnviar = { ...valores, urlImagensAnuncio: retorno.urlImagens };
-      console.log("URL IMAGENS: ", retorno.urlImagens);
+      // console.log("URL IMAGENS: ", retorno.urlImagens);
 
       let response;
       //Editar o Anuncio
@@ -213,7 +260,7 @@ const CadastroAnuncio = () => {
         response = await deletaImagensCloudinary();
 
         if (response) {
-          console.log("RESPONDEUU", response);
+          // console.log("RESPONDEUU", response);
           console.log("RESPONDEUU", {
             ...jsonEnviar,
             urlImagensAnuncioDel: response,
@@ -226,12 +273,18 @@ const CadastroAnuncio = () => {
         //response = await AtualizaAnuncio(jsonEnviar);
       } else {
         //Inserir Anúncio
+        jsonEnviar = {
+          ...jsonEnviar,
+          valorServicoAnuncio: mascaraMoedaParaDecimalSQL(
+            valores.valorServicoAnuncio
+          ),
+        };
 
         response = await InsereAnuncio(jsonEnviar);
 
         if (response) {
           navigate("/");
-          setExibirAlertaSucesso(true);
+          // setExibirAlertaSucesso(true);
         }
       }
     } else {
@@ -250,88 +303,115 @@ const CadastroAnuncio = () => {
         {/* <h1>Cadastro de Anuncio</h1> */}
         <div className="bg-gradient-primary ">
           <div className="container ">
-            <div className="card o-hidden border-0  my-5 ">
+            <div className="card o-hidden border-0  my-5 shadow-lg">
               {/* shadow-lg */}
-              <div className="card-body p-0"> {/*pode retirar*/}
-              <div className="row">
-                <div className="col-lg-12 " style={{border: "1px solid lightgray", borderRadius: "5px"}}>
-                  {" "}
-                  {/*col-lg-12"*/}
-                  <div className="p-5"> {/*pode retirar, acho que esse é o padding da pagina*/}
-                  <div className="text-center">
-                    <h1 className="h4 text-gray-900 mb-4">
-                      O que você está anunciando?
-                    </h1>
-                  </div>
-                  <form onSubmit={() => {}} className="user ">
-                    <div className="form-group row">
-                      <div className="col-lg-8 mb-3 mb-sm-0 ">
-                        <TextField
-                          label="Título"
-                          className="form-control form-control-user"
-                          size="small"
-                          maxLength="80"
-                          name="tituloAnuncio"
-                          id="tituloAnuncio"
-                          onChange={atualizaValores}
-                          onBlur={atualizaValores}
-                        />
-                        <FormHelperText
-                          style={
-                            erros.tituloAnuncio !== "Ok!"
-                              ? { color: "red" }
-                              : { color: "green" }
-                          }
-                          className="helper-text-pessoa"
-                        >
-                          {erros.tituloAnuncio}
-                        </FormHelperText>
+              <div className="card-body p-0">
+                {" "}
+                {/*pode retirar*/}
+                <div className="row">
+                  <div
+                    className="col-lg-12 "
+                    // style={{
+                    //   border: "1px solid lightgray",
+                    //   borderRadius: "5px",
+                    // }}
+                  >
+                    {" "}
+                    {/*col-lg-12"*/}
+                    <div className="p-5">
+                      <div className="text-center">
+                        <h1 className="h4 text-gray-900 mb-4">
+                          O que você está anunciando?
+                        </h1>
                       </div>
-                    </div>
-                    <div className="form-group row">
-                      <div className="col-lg-8 mb-3 mb-sm-0">
-                        {/* <TextField
-                        label="Descrição"
-                        className="form-control form-control-user"
-                        size="small"
-                        type="text"
-                        maxLength="11"
-                        value={valores.descricaoAnuncio}
-                        name="descricaoAnuncio"
-                        id="descricaoAnuncio"
-                        onChange={atualizaValores}
-                        onBlur={atualizaValores}
-                      /> */}
-                        <TextField
-                          style={{ width: "100%" }}
-                          id="outlined-multiline-static"
-                          label="Descrição"
-                          multiline
-                          rows={4}
-                          defaultValue="Default Value"
-                        />
-                        <FormHelperText
-                          style={
-                            erros.descricaoAnuncio !== "Ok!"
-                              ? { color: "red" }
-                              : { color: "green" }
-                          }
-                          className="helper-text-pessoa"
-                        >
-                          {erros.descricaoAnuncio}
-                        </FormHelperText>
-                      </div>
-                      {/* <div className="col-sm-7">
+                      <form onSubmit={cadastrarAnuncio} className="user ">
+                        <div className="form-group row">
+                          <div className="col-lg-8 mb-3 mb-sm-0 ">
                             <TextField
-                              label="E-mail"
+                              label="Título"
                               className="form-control form-control-user"
                               size="small"
-                              type="email"
                               maxLength="80"
+                              name="tituloAnuncio"
+                              id="tituloAnuncio"
+                              onChange={atualizaValores}
+                              onBlur={atualizaValores}
+                              type="text"
+                              value={valores.tituloAnuncio}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.tituloAnuncio !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.tituloAnuncio}
+                            </FormHelperText>
+                          </div>
+                        </div>
+                        <div className="form-group row">
+                          <div className="col-lg-8 mb-3 mb-sm-0">
+                            <TextField
+                              style={{ width: "100%" }}
+                              label="Descrição"
+                              multiline
+                              rows={4}
+                              name="descricaoAnuncio"
+                              id="descricaoAnuncio"
+                              onChange={atualizaValores}
+                              value={valores.descricaoAnuncio}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.descricaoAnuncio !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.descricaoAnuncio}
+                            </FormHelperText>
+                          </div>
+                        </div>
+                        <div className="form-group row">
+                          <div className="col-lg-4 mb-3 mb-sm-3">
+                            <TextField
+                              label="Valor do Serviço"
+                              className="form-control form-control-user"
+                              size="small"
+                              type="text"
+                              maxLength="11"
+                              value={valores.valorServicoAnuncio}
+                              name="valorServicoAnuncio"
+                              id="valorServicoAnuncio"
+                              onChange={atualizaValores}
+                              onBlur={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.valorServicoAnuncio !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.valorServicoAnuncio}
+                            </FormHelperText>
+                          </div>
+                          <div className="col-lg-4">
+                            <TextField
+                              label="Horas do Serviço"
+                              className="form-control form-control-user"
+                              size="small"
+                              type="text"
+                              inputProps={{ maxLength: 5 }}
                               name="horasServicoAnuncio"
                               id="horasServicoAnuncio"
                               onChange={atualizaValores}
                               onBlur={atualizaValores}
+                              value={valores.horasServicoAnuncio}
                             />
                             <FormHelperText
                               style={
@@ -343,196 +423,135 @@ const CadastroAnuncio = () => {
                             >
                               {erros.horasServicoAnuncio}
                             </FormHelperText>
-                          </div> */}
-                    </div>
-                    <div className="form-group row">
-                      <div className="col-lg-4 mb-3 mb-sm-3">
-                        <TextField
-                          label="Valor do Serviço"
-                          className="form-control form-control-user"
-                          size="small"
-                          type="text"
-                          maxLength="11"
-                          value={valores.valorServicoAnuncio}
-                          name="valorServicoAnuncio"
-                          id="valorServicoAnuncio"
-                          onChange={atualizaValores}
-                          onBlur={atualizaValores}
-                        />
-                        <FormHelperText
-                          style={
-                            erros.horasServicoAnuncio !== "Ok!"
-                              ? { color: "red" }
-                              : { color: "green" }
-                          }
-                          className="helper-text-pessoa"
-                        >
-                          {erros.horasServicoAnuncio}
-                        </FormHelperText>
-                      </div>
-                      <div className="col-lg-4">
-                        <TextField
-                          label="Horas do Serviço"
-                          className="form-control form-control-user"
-                          size="small"
-                          type="email"
-                          maxLength="80"
-                          name="horasServicoAnuncio"
-                          id="horasServicoAnuncio"
-                          onChange={atualizaValores}
-                          onBlur={atualizaValores}
-                        />
-                        <FormHelperText
-                          style={
-                            erros.horasServicoAnuncio !== "Ok!"
-                              ? { color: "red" }
-                              : { color: "green" }
-                          }
-                          className="helper-text-pessoa"
-                        >
-                          {erros.horasServicoAnuncio}
-                        </FormHelperText>
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <div className="col-lg-4 mb-3 mb-sm-3">
-                        <TextField
-                          label="Telefone"
-                          className="form-control form-control-user"
-                          size="small"
-                          type="text"
-                          maxLength="11"
-                          value={valores.telefoneContatoAnuncio}
-                          name="telefoneContatoAnuncio"
-                          id="telefoneContatoAnuncio"
-                          onChange={atualizaValores}
-                          onBlur={atualizaValores}
-                        />
-                        <FormHelperText
-                          style={
-                            erros.horasServicoAnuncio !== "Ok!"
-                              ? { color: "red" }
-                              : { color: "green" }
-                          }
-                          className="helper-text-pessoa"
-                        >
-                          {erros.horasServicoAnuncio}
-                        </FormHelperText>
-                      </div>
-                      <div className="col-lg-4">
-                        <MobbSelect
-                          valorLabel="Categoria"
-                          name="categorias"
-                          id="categorias"
-                          dataOptions={generos}
-                          onChange={atualizaValores}
-                          focus={atualizaValores}
-                        />
-                        <FormHelperText
-                          style={
-                            erros.horasServicoAnuncio !== "Ok!"
-                              ? { color: "red" }
-                              : { color: "green" }
-                          }
-                          className="helper-text-pessoa"
-                        >
-                          {erros.horasServicoAnuncio}
-                        </FormHelperText>
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <div className="col-lg-4 mb-3 mb-sm-0">
-                        <label htmlFor="uf">Estado</label>
-                        <Select
-                          name="uf"
-                          id="uf"
-                          placeholder="Selecione..."
-                          // onChange={(e) => setIdEstado(e.value)}
-                          onChange={(e) => atualizaValores(e)}
-                          options={estados}
-                          noOptionsMessage={() => "Nenhuma opção encontrada!"}
-                          value={{
-                            value: valores.idEstado,
-                            label: valores.nomeEstado,
-                          }}
-                        />
-                      </div>
-                      <div className="col-lg-4">
-                        <label htmlFor="idCidade">Cidade</label>
-                        <Select
-                          name="idCidade"
-                          id="idCidade"
-                          placeholder="Selecione..."
-                          options={cidades}
-                          isDisabled={!idEstado > 0}
-                          onChange={(e) => atualizaValores(e)}
-                          noOptionsMessage={() => "Nenhuma opção encontrada!"}
-                          value={{
-                            value: valores.idCidade,
-                            label: valores.nomeCidade,
-                          }}
-                        />
-                      </div>
-                      <FormHelperText
-                        style={
-                          erros.senhaUsuarioPessoa !== "Ok!"
-                            ? { color: "red" }
-                            : { color: "green" }
-                        }
-                        className="helper-text-pessoa"
-                      >
-                        {erros.senhaUsuarioPessoa}
-                      </FormHelperText>
-                    </div>
-                    <div className="form-group row ">
-                      <div className="col-lg-12 text-center">
-                        <Container>
-                          <Content>
-                            <UploadImagem />
-                          </Content>
-                        </Container>
-                      </div>
-                    </div>
-                    <div className="form-group row ">
-                      <div className="col-lg-12 text-center">
-                        <input
-                          type="submit"
-                          value="Cadastrar"
-                          className="btn btn-warning btn-user btn-block"
-                          style={{ maxWidth: "600px" }}
-                        />
-                      </div>
-                    </div>
+                          </div>
+                        </div>
+                        <div className="form-group row">
+                          <div className="col-lg-4 mb-3 mb-sm-3">
+                            <TextField
+                              label="Telefone"
+                              className="form-control form-control-user"
+                              size="small"
+                              type="text"
+                              maxLength="11"
+                              value={valores.telefoneContatoAnuncio}
+                              name="telefoneContatoAnuncio"
+                              id="telefoneContatoAnuncio"
+                              onChange={atualizaValores}
+                              onBlur={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.telefoneContatoAnuncio !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.telefoneContatoAnuncio}
+                            </FormHelperText>
+                          </div>
+                          <div className="col-lg-4">
+                            <MobbSelect
+                              valorLabel="Categoria"
+                              name="categorias"
+                              id="categorias"
+                              dataOptions={categorias}
+                              defaultValue={{
+                                value: valores.idCategoriaAnuncio,
+                                label: valores.nomeCategoriaAnuncio,
+                              }}
+                              onChange={atualizaValores}
+                            />
+                            <FormHelperText
+                              style={
+                                erros.horasServicoAnuncio !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.horasServicoAnuncio}
+                            </FormHelperText>
+                          </div>
+                        </div>
+                        <div className="form-group row">
+                          <div className="col-lg-4 mb-3 mb-sm-0">
+                            <MobbSelect
+                              valorLabel="Estado"
+                              name="uf"
+                              id="uf"
+                              dataOptions={estados}
+                              onChange={(e) => atualizaValores(e)}
+                              defaultValue={{
+                                value: valores.idEstado,
+                                label: valores.nomeEstado,
+                              }}
+                            />
+                          </div>
+                          <div className="col-lg-4">
+                            <MobbSelect
+                              valorLabel="Cidade"
+                              name="idCidade"
+                              id="idCidade"
+                              dataOptions={cidades}
+                              disabled={!idEstado > 0}
+                              onChange={(e) => atualizaValores(e)}
+                              defaultValue={{
+                                value: valores.idCidade,
+                                label: valores.nomeCidade,
+                              }}
+                            />
+                          </div>
+                          <FormHelperText
+                            style={
+                              erros.senhaUsuarioPessoa !== "Ok!"
+                                ? { color: "red" }
+                                : { color: "green" }
+                            }
+                            className="helper-text-pessoa"
+                          >
+                            {erros.senhaUsuarioPessoa}
+                          </FormHelperText>
+                        </div>
+                        <div className="form-group row ">
+                          <div className="col-lg-12 text-center">
+                            <Container>
+                              <Content>
+                                <UploadImagem />
+                              </Content>
+                            </Container>
+                          </div>
+                        </div>
+                        <div className="form-group row ">
+                          <div className="col-lg-12 text-center">
+                            <input
+                              type="submit"
+                              value="Cadastrar"
+                              className="btn btn-warning btn-user btn-block"
+                              style={{ maxWidth: "600px" }}
+                            />
+                          </div>
+                        </div>
 
-                    <hr />
-                    <div className="form-group row ">
-                      <div className="col-lg-12 text-center">
-                        <input
-                          type="button"
-                          value="Voltar para o Login"
-                          className="btn btn-dark btn-user btn-block"
-                          style={{ maxWidth: "600px" }}
-                          onClick={() => {
-                            navigate("/login");
-                          }}
-                        />
-                      </div>
+                        <hr />
+                        <div className="form-group row ">
+                          <div className="col-lg-12 text-center">
+                            <input
+                              type="button"
+                              value="Voltar para o Login"
+                              className="btn btn-dark btn-user btn-block"
+                              style={{ maxWidth: "600px" }}
+                              onClick={() => {
+                                navigate("/login");
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </form>
+                      <hr />
                     </div>
-                  </form>
-                  <hr />
-                  {/* <div className="text-center">
-                      <a className="small" href="forgot-password.html">
-                        Esqueceu sua senha?
-                      </a>
-                    </div> */}
-                  {/* <div className="text-center">
-                      <a className="small" href="login.html">
-                        Já possui cadastro? Login!
-                      </a>
-                    </div> */}
                   </div>
                 </div>
-              </div>
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ const CustomValueContainer = ({ children, ...props }) => {
   );
 };
 
-const MobbSelect = ({valorLabel, name, onChange, focus, id, dataOptions}) => {
+const MobbSelect = ({valorLabel, name, onChange, focus, id, dataOptions, disabled, defaultValue}) => {
   return (
     <Select
       className="basic-single"
@@ -27,6 +27,8 @@ const MobbSelect = ({valorLabel, name, onChange, focus, id, dataOptions}) => {
       options={dataOptions}      
       onChange={onChange}      
       onFocus={focus}      
+      isDisabled={disabled}
+      value={defaultValue}
       noOptionsMessage={() => "Opção não encontrada!"}
       components={{
         ValueContainer: CustomValueContainer,
