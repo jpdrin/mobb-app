@@ -16,20 +16,19 @@ import UploadImagem from "../../../components/UploadImagem/UploadImagem";
 import { Container, Content } from "../../../components/UploadImagem/styles";
 import { CadastroContext } from "../../../contexts/Anuncio/cadastro";
 import { useNavigate, useParams } from "react-router-dom";
-import Alerta from "../../../components/Alerta/alerta";
 import { decryptId } from "../../../utils/cryptoUtils";
 import Navbar from "../../../components/navbar_novo/Navbar";
 import MobbFooter from "../../../components/Footer/Footer";
 import TextField from "@mui/material/TextField";
 import { FormHelperText } from "@mui/material";
 import MobbSelect from "../../../components/MobbSelect/Select";
-import MobbPassword from "../../../components/MobbPassword/MobbPassword";
 import {
   mascaraMoeda,
   apenasNumeros,
   telefoneDDIMask,
   mascaraMoedaParaDecimalSQL,
 } from "../../../utils/mascarasUtils.js";
+import Swal from "sweetalert2";
 
 const CadastroAnuncio = () => {
   const { logout, usuario, exibirAlertaSucesso, setExibirAlertaSucesso } =
@@ -64,6 +63,10 @@ const CadastroAnuncio = () => {
     descricaoAnuncio: "*Obrigatório",
     valorServicoAnuncio: "*Obrigatório",
     horasServicoAnuncio: "*Obrigatório",
+    telefoneContatoAnuncio: "*Obrigatório",
+    idCategoriaAnuncio: "*Obrigatório",
+    idEstado: "*Obrigatório",
+    idCidade: "*Obrigatório",
   });
 
   const estadosIniciais = [{ value: 999, label: "Exterior" }];
@@ -93,7 +96,86 @@ const CadastroAnuncio = () => {
   useEffect(() => {
     buscaCidades(idEstado);
     setValores({ ...valores, idEstado: idEstado });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idEstado]);
+
+  //#region Validação dos campos
+  useEffect(() => {
+    if (valores.tituloAnuncio.length < 4)
+      setErros({ ...erros, tituloAnuncio: "Título Inválido!" });
+    else setErros({ ...erros, tituloAnuncio: "Ok!" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valores.tituloAnuncio]);
+
+  useEffect(() => {
+    if (valores.descricaoAnuncio.length < 10)
+      setErros({ ...erros, descricaoAnuncio: "Descrição Inválida!" });
+    else setErros({ ...erros, descricaoAnuncio: "Ok!" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valores.descricaoAnuncio]);
+
+  /*useEffect(() => {
+    if (mascaraMoedaParaDecimalSQL(valores.valorServicoAnuncio).length < 1)
+      setErros({
+        ...erros,
+        valorServicoAnuncio: "Insira um valor correto!",
+      });
+    else setErros({ ...erros, valorServicoAnuncio: "Ok!" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valores.valorServicoAnuncio]);*/
+
+  useEffect(() => {
+    if (!valores.horasServicoAnuncio > 0)
+      setErros({
+        ...erros,
+        horasServicoAnuncio: "Informe uma quantidade!",
+      });
+    else setErros({ ...erros, horasServicoAnuncio: "Ok!" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valores.horasServicoAnuncio]);
+
+  useEffect(() => {
+    if (valores.telefoneContatoAnuncio.length < 19)
+      setErros({ ...erros, telefoneContatoAnuncio: "Telefone Inválido!" });
+    else setErros({ ...erros, telefoneContatoAnuncio: "Ok!" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valores.telefoneContatoAnuncio]);
+
+  useEffect(() => {
+    if (!valores.idCategoriaAnuncio > 0)
+      setErros({ ...erros, idCategoriaAnuncio: "Categoria Inválida!" });
+    else setErros({ ...erros, idCategoriaAnuncio: "Ok!" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valores.idCategoriaAnuncio]);
+
+  useEffect(() => {
+    if (!idEstado > 0) setErros({ ...erros, idEstado: "*Obrigatório" });
+    else setErros({ ...erros, idEstado: "Ok!" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idEstado]);
+
+  useEffect(() => {
+    if (!valores.idCidade > 0) setErros({ ...erros, idCidade: "*Obrigatório" });
+    else setErros({ ...erros, idCidade: "Ok!" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valores.idCidade]);
+
+  function verificaCamposInvalidos(obj) {
+    var camposInvalidos = 0;
+
+    for (var propriedade in obj) {
+      if (obj.hasOwnProperty(propriedade)) {
+        if (typeof obj[propriedade] == "object") {
+          verificaCamposInvalidos(obj[propriedade]);
+        } else {
+          if (obj[propriedade] !== "Ok!") camposInvalidos += 1;
+        }
+      }
+    }
+
+    return camposInvalidos;
+  }
+  //#endregion
 
   // console.log("agoraaaa", valores);
   // console.log("EDITAR IMAGENSS", imagensEditar);
@@ -164,52 +246,6 @@ const CadastroAnuncio = () => {
         nomeCategoriaAnuncio: e.label,
       });
     }
-
-    validaCampos(e);
-  };
-
-  const validaCampos = (e) => {
-    if (e.hasOwnProperty("target")) {
-      //Se tem target, é porque veio de um txt
-
-      const { name, value } = e.target;
-
-      switch (name) {
-        case "tituloAnuncio":
-          if (valores.tituloAnuncio.length < 4)
-            setErros({ ...erros, [name]: "Título Inválido!" });
-          else setErros({ ...erros, [name]: "Ok!" });
-          break;
-
-        case "descricaoAnuncio":
-          if (valores.descricaoAnuncio.length < 9)
-            setErros({ ...erros, [name]: "Descrição Inválida!" });
-          else setErros({ ...erros, [name]: "Ok!" });
-          break;
-
-        case "telefoneContatoAnuncio":
-          if (valores.telefoneContatoAnuncio.length < 19)
-            setErros({ ...erros, [name]: "Telefone Inválido!" });
-          else setErros({ ...erros, [name]: "Ok!" });
-          break;
-
-        case "valorServicoAnuncio":
-          console.log(
-            "valor",
-            mascaraMoedaParaDecimalSQL(valores.valorServicoAnuncio)
-          );
-          if (mascaraMoedaParaDecimalSQL(value).length < 1)
-            setErros({ ...erros, [name]: "Insira um valor correto!" });
-          else setErros({ ...erros, [name]: "Ok!" });
-          break;
-
-        case "horasServicoAnuncio":
-          if (!valores.horasServicoAnuncio > 0)
-            setErros({ ...erros, [name]: "Informe uma quantidade!" });
-          else setErros({ ...erros, [name]: "Ok!" });
-          break;
-      }
-    }
   };
 
   const buscaEstados = async () => {
@@ -244,12 +280,27 @@ const CadastroAnuncio = () => {
 
   const cadastrarAnuncio = async (e) => {
     e.preventDefault();
+
+    if (verificaCamposInvalidos(erros) > 0) return;
+
     // setExibirAlertaSucesso(true);
     setCarregando(true);
 
     var retorno = await enviarImagens();
 
     if (retorno.OK) {
+      if (retorno.urlImagens === "") {
+        Swal.fire({
+          title: "Aviso!",
+          text: "Necessário adicionar ao mínimo uma imagem!",
+          icon: "error",
+          confirmButtonText: "Fechar",
+        });
+
+        setCarregando(false);
+        return;
+      }
+
       setValores({ ...valores, urlImagensAnuncio: retorno.urlImagens });
       let jsonEnviar = { ...valores, urlImagensAnuncio: retorno.urlImagens };
       // console.log("URL IMAGENS: ", retorno.urlImagens);
@@ -464,18 +515,18 @@ const CadastroAnuncio = () => {
                             />
                             <FormHelperText
                               style={
-                                erros.horasServicoAnuncio !== "Ok!"
+                                erros.idCategoriaAnuncio !== "Ok!"
                                   ? { color: "red" }
                                   : { color: "green" }
                               }
                               className="helper-text-pessoa"
                             >
-                              {erros.horasServicoAnuncio}
+                              {erros.idCategoriaAnuncio}
                             </FormHelperText>
                           </div>
                         </div>
                         <div className="form-group row">
-                          <div className="col-lg-4 mb-3 mb-sm-0">
+                          <div className="col-lg-4 mb-3 mb-sm-3">
                             <MobbSelect
                               valorLabel="Estado"
                               name="uf"
@@ -487,6 +538,16 @@ const CadastroAnuncio = () => {
                                 label: valores.nomeEstado,
                               }}
                             />
+                            <FormHelperText
+                              style={
+                                erros.idEstado !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.idEstado}
+                            </FormHelperText>
                           </div>
                           <div className="col-lg-4">
                             <MobbSelect
@@ -501,17 +562,17 @@ const CadastroAnuncio = () => {
                                 label: valores.nomeCidade,
                               }}
                             />
+                            <FormHelperText
+                              style={
+                                erros.idCidade !== "Ok!"
+                                  ? { color: "red" }
+                                  : { color: "green" }
+                              }
+                              className="helper-text-pessoa"
+                            >
+                              {erros.idCidade}
+                            </FormHelperText>
                           </div>
-                          <FormHelperText
-                            style={
-                              erros.senhaUsuarioPessoa !== "Ok!"
-                                ? { color: "red" }
-                                : { color: "green" }
-                            }
-                            className="helper-text-pessoa"
-                          >
-                            {erros.senhaUsuarioPessoa}
-                          </FormHelperText>
                         </div>
                         <div className="form-group row ">
                           <div className="col-lg-12 text-center">
@@ -538,11 +599,11 @@ const CadastroAnuncio = () => {
                           <div className="col-lg-12 text-center">
                             <input
                               type="button"
-                              value="Voltar para o Login"
+                              value="Voltar"
                               className="btn btn-dark btn-user btn-block"
                               style={{ maxWidth: "600px" }}
                               onClick={() => {
-                                navigate("/login");
+                                navigate("/");
                               }}
                             />
                           </div>
