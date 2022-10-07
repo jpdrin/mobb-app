@@ -1,9 +1,8 @@
 import axios from "axios";
 
-
 export const Api = axios.create({
   baseURL: "https://localhost:7208/api/",
-  // baseURL: "http://mobbwebapi.us-east-1.elasticbeanstalk.com/api/",  
+  // baseURL: "http://mobbwebapi.us-east-1.elasticbeanstalk.com/api/",
 });
 
 //Login
@@ -121,18 +120,34 @@ export const InsereAnuncioFavorito = async (idPessoa, idAnuncio) => {
     })
     .catch(() => {
       return false;
-    })
-}
+    });
+};
 
-export const InsereAvaliacaoAnuncio = async (idAnuncio, idPessoa, avaliacao) => {
-  return Api.post(`Anuncios/insere-avaliacao-anuncio/${idAnuncio}/${idPessoa}/${avaliacao}`)
+export const InsereAvaliacaoAnuncio = async (
+  idAnuncio,
+  idPessoa,
+  avaliacao
+) => {
+  return Api.post(
+    `Anuncios/insere-avaliacao-anuncio/${idAnuncio}/${idPessoa}/${avaliacao}`
+  )
     .then(() => {
       return true;
     })
     .catch(() => {
       return false;
+    });
+};
+
+export const InsereMensagemAnuncio = async (idAnuncio, idPessoa) => {
+  return Api.post(`Anuncios/insere-mensagem-anuncio/${idAnuncio}/${idPessoa}`)
+    .then(() => {
+      return true;
     })
-}
+    .catch(() => {
+      return false;
+    });
+};
 
 export const deletaAnuncio = async (idAnuncio) => {
   return Api.delete(`Anuncios/deleta-anuncio/${idAnuncio}`)
@@ -153,7 +168,7 @@ export const removeAnuncioFavorito = async (idPessoa, idAnuncio) => {
     .catch(() => {
       return false;
     });
-}
+};
 
 export const deletaComentarioAnuncio = async (idComentario) => {
   return Api.delete(`Anuncios/deleta-comentario-anuncio/${idComentario}`)
@@ -163,7 +178,7 @@ export const deletaComentarioAnuncio = async (idComentario) => {
     .catch(() => {
       return false;
     });
-}
+};
 
 //Listagem dos Países
 export const listaPaises = async () => {
@@ -193,18 +208,82 @@ export const dadosComentarios = async (idAnuncio) => {
   return Api.get(`Anuncios/lista-comentarios-anuncio/${idAnuncio}`);
 };
 
-export const verificaAnuncios = async (idEstado, idCidade, idCategoriaAnuncio) => {
-  return Api.get(`Anuncios/verifica-anuncios/${idEstado}/${idCidade}/${idCategoriaAnuncio}`);
-}
+export const verificaAnuncios = async (
+  idEstado,
+  idCidade,
+  idCategoriaAnuncio
+) => {
+  return Api.get(
+    `Anuncios/verifica-anuncios/${idEstado}/${idCidade}/${idCategoriaAnuncio}`
+  );
+};
 
 export const dadosAnunciosFavoritos = async (idPessoa) => {
-  return Api.get(`Anuncios/anuncios-favoritos/${idPessoa}`);  
-}
+  return Api.get(`Anuncios/anuncios-favoritos/${idPessoa}`);
+};
 
 export const verificaAnuncioFavorito = async (idPessoa, idAnuncio) => {
   return Api.get(`Anuncios/verifica-anuncio-favorito/${idPessoa}/${idAnuncio}`);
+};
+
+export const verificaInteracaoAnuncio = async (idAnuncio, idPessoa) => {
+  return Api.get(`Anuncios/verifica-interacao-anuncio/${idAnuncio}/${idPessoa}`);
 }
 
 export const avaliacaoAnuncioPessoa = async (idAnuncio, idPessoa) => {
   return Api.get(`Anuncios/avaliacao-anuncio-pessoa/${idAnuncio}/${idPessoa}`);
-}
+};
+
+export const relAnunciosCadastrados = async (
+  idPessoa,
+  idCategoriaAnuncio,
+  dataCadastroInicial,
+  dataCadastroFinal,
+  avaliacaoInicial,
+  avaliacaoFinal
+) => {
+  return Api.get(
+    `Anuncios/relatorio-anuncios-cadastrados-pessoa?idPessoa=${idPessoa}&` +
+      `idCategoriaAnuncio=${idCategoriaAnuncio}&` +
+      `dataCadastroInicial=${dataCadastroInicial.trim()}&` +
+      `dataCadastroFinal=${dataCadastroFinal.trim()}&` +
+      `avaliacaoInicial=${avaliacaoInicial}&` +
+      `avaliacaoFinal=${avaliacaoFinal}`
+  );
+};
+
+export const relInteracoesAnunciosCadastrados = async (
+  idPessoa,
+  idCategoriaAnuncio,
+  dataCadastroInicial,
+  dataCadastroFinal,
+  avaliacaoInicial,
+  avaliacaoFinal
+) => {
+  return Api.get(
+    `Anuncios/relatorio-interacoes-anuncios-cadastrados-pessoa?idPessoa=${idPessoa}&` +
+      `idCategoriaAnuncio=${idCategoriaAnuncio}&` +
+      `dataCadastroInicial=${dataCadastroInicial.trim()}&` +
+      `dataCadastroFinal=${dataCadastroFinal.trim()}&` +
+      `avaliacaoInicial=${avaliacaoInicial}&` +
+      `avaliacaoFinal=${avaliacaoFinal}`
+  );
+};
+
+export const relInteracoesAnunciosFavPessoa = async (
+  idPessoa,
+  idCategoriaAnuncio,
+  dataCadastroInicial,
+  dataCadastroFinal,
+  avaliacaoInicial,
+  avaliacaoFinal
+) => {
+  return Api.get(
+    `Anuncios/relatorio-interacoes-anuncios-favoritos-pessoa?idPessoa=${idPessoa}&` +
+      `idCategoriaAnuncio=${idCategoriaAnuncio}&` +
+      `dataCadastroInicial=${dataCadastroInicial.trim()}&` +
+      `dataCadastroFinal=${dataCadastroFinal.trim()}&` +
+      `avaliacaoInicial=${avaliacaoInicial}&` +
+      `avaliacaoFinal=${avaliacaoFinal}`
+  );
+};

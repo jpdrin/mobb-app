@@ -249,7 +249,7 @@ const CadastroPessoa = () => {
                               label="Nome"
                               className="form-control form-control-user"
                               size="small"
-                              maxLength="80"
+                              inputProps={{ maxLength: 80 }}
                               name="nomePessoa"
                               id="nomePessoa"
                               onChange={atualizaValores}
@@ -294,7 +294,7 @@ const CadastroPessoa = () => {
                               className="form-control form-control-user"
                               size="small"
                               type="text"
-                              maxLength="11"
+                              inputProps={{ maxLength: 11 }}
                               value={valores.inscricaoNacionalPessoa}
                               name="inscricaoNacionalPessoa"
                               id="inscricaoNacionalPessoa"
@@ -318,7 +318,7 @@ const CadastroPessoa = () => {
                               className="form-control form-control-user"
                               size="small"
                               type="email"
-                              maxLength="80"
+                              inputProps={{ maxLength: 80 }}
                               name="emailPessoa"
                               id="emailPessoa"
                               onChange={atualizaValores}
@@ -343,6 +343,7 @@ const CadastroPessoa = () => {
                               className="form-control form-control-user"
                               size="small"
                               type="text"
+                              inputProps={{ maxLength: 20 }}
                               value={valores.telefoneCelularPessoa}
                               name="telefoneCelularPessoa"
                               id="telefoneCelularPessoa"
@@ -390,7 +391,7 @@ const CadastroPessoa = () => {
                             className="form-control form-control-user"
                             size="small"
                             type="text"
-                            maxLength="15"
+                            inputProps={{ maxLength: 15 }}
                             name="codigoUsuarioPessoa"
                             id="codigoUsuarioPessoa"
                             onChange={atualizaValores}

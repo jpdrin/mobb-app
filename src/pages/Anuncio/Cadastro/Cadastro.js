@@ -114,15 +114,15 @@ const CadastroAnuncio = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valores.descricaoAnuncio]);
 
-  /*useEffect(() => {
-    if (mascaraMoedaParaDecimalSQL(valores.valorServicoAnuncio).length < 1)
+  useEffect(() => {
+    if (valores.valorServicoAnuncio.length < 1)
       setErros({
         ...erros,
         valorServicoAnuncio: "Insira um valor correto!",
       });
     else setErros({ ...erros, valorServicoAnuncio: "Ok!" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valores.valorServicoAnuncio]);*/
+  }, [valores.valorServicoAnuncio]);
 
   useEffect(() => {
     if (!valores.horasServicoAnuncio > 0)
@@ -185,6 +185,18 @@ const CadastroAnuncio = () => {
 
     setValores(response.data);
     setIdEstado(response.data.idEstado);
+
+    setErros({
+      ...erros,
+      tituloAnuncio: "Ok!",
+      descricaoAnuncio: "Ok!",
+      valorServicoAnuncio: "Ok!",
+      horasServicoAnuncio: "Ok!",
+      telefoneContatoAnuncio: "Ok!",
+      idCategoriaAnuncio: "Ok!",
+      idEstado: "Ok!",
+      idCidade: "Ok!",
+    });
   };
 
   const recuperaImagensAnuncio = async (idAnuncio) => {
@@ -382,7 +394,7 @@ const CadastroAnuncio = () => {
                               label="Título"
                               className="form-control form-control-user"
                               size="small"
-                              maxLength="80"
+                              inputProps={{ maxLength: 50 }}
                               name="tituloAnuncio"
                               id="tituloAnuncio"
                               onChange={atualizaValores}
@@ -409,6 +421,7 @@ const CadastroAnuncio = () => {
                               label="Descrição"
                               multiline
                               rows={4}
+                              inputProps={{ maxLength: 2000 }}
                               name="descricaoAnuncio"
                               id="descricaoAnuncio"
                               onChange={atualizaValores}
@@ -433,7 +446,7 @@ const CadastroAnuncio = () => {
                               className="form-control form-control-user"
                               size="small"
                               type="text"
-                              maxLength="11"
+                              inputProps={{ maxLength: 15 }}
                               value={valores.valorServicoAnuncio}
                               name="valorServicoAnuncio"
                               id="valorServicoAnuncio"
@@ -483,7 +496,7 @@ const CadastroAnuncio = () => {
                               className="form-control form-control-user"
                               size="small"
                               type="text"
-                              maxLength="11"
+                              inputProps={{ maxLength: 20 }}
                               value={valores.telefoneContatoAnuncio}
                               name="telefoneContatoAnuncio"
                               id="telefoneContatoAnuncio"

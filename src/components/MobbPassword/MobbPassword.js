@@ -45,7 +45,8 @@ const MobbPassword = ({name, id, onChange, onBlur}) => {
           id={id}
           type={values.showPassword ? "text" : "password"}
           value={values.password}
-          size="small"          
+          size="small"
+          inputProps={{ maxLength: 20 }}
           onChange={handleChange("password")}
           onKeyDown={onChange}
           onBlur={onBlur}

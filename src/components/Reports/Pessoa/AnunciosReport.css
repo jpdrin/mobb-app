@@ -1,0 +1,35 @@
+.AnuncioReport__grupo-filtro{
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.Anuncio-Report_grupo-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  margin-left: 10px;
+}
+
+.AnuncioReport__campo-filtro-data{
+  width: 91%;
+}
+
+@media screen and (max-width: 720px) {
+  .Anuncio-Report_grupo-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;    
+    margin-left: 0;
+  }
+
+  .AnuncioReport__campo-filtro{
+    width: 100%;
+  }
+
+  .AnuncioReport__campo-filtro-data{
+    width: 100%;
+  }
+}

@@ -84,10 +84,10 @@ export const mascaraMoeda = (valor) => {
     .join("")
     .padStart(3, "0")
   const digitsFloat = onlyDigits.slice(0, -2) + "." + onlyDigits.slice(-2)
-  return maskCurrency(digitsFloat)
+  return formataValorBR(digitsFloat)
 }
 
-function maskCurrency(valor, locale = 'pt-BR', currency = 'BRL') {
+export function formataValorBR(valor, locale = 'pt-BR', currency = 'BRL') {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency
@@ -104,4 +104,14 @@ export const mascaraMoedaParaDecimalSQL = (valor) => {
   valor = valor.replace("R$", "");
   valor = valor.replace(/\.|\-/g, '');
   return valor.replace(",", ".").trim();
+}
+
+export const dataFormatadaBR = (value) =>{
+  var data = new Date(value),
+      dia  = data.getDate().toString(),
+      diaF = (dia.length == 1) ? '0'+dia : dia,
+      mes  = (data.getMonth()+1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+      mesF = (mes.length == 1) ? '0'+mes : mes,
+      anoF = data.getFullYear();
+  return diaF+"/"+mesF+"/"+anoF;
 }

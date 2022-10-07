@@ -1,23 +1,74 @@
 import React, { useState, useEffect, useContext } from "react";
 import { SistemaContext } from "../../../contexts/Aplicacao/sistema";
-import {
-  verificaTokenValido,
-} from "../../../services/Api";
+import { verificaTokenValido } from "../../../services/Api";
 import "../Cadastro/cadastro.css";
-import { useNavigate, useParams } from "react-router-dom";
-import { decryptId } from "../../../utils/cryptoUtils";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../../components/navbar_novo/Navbar";
 import MobbFooter from "../../../components/Footer/Footer";
 import TextField from "@mui/material/TextField";
 import { FormHelperText } from "@mui/material";
-import { BsArrowUpShort, BsArrowDownShort, BsSearch } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
 import MobbFilter from "../../../components/MobbFilter/Filter";
+import AnunciosReport, {
+  Report,
+} from "../../../components/Reports/Pessoa/AnunciosReport";
 
 const MeuPerfil = () => {
+
+
+  const [relAnunciosInteragidos, setRelAnunciosInteragidos] = useState([ //Informações sobre os anúncio que eu interagi
+    {
+      idAnuncio: 1,
+      idPessoa: 11,
+      tituloAnuncio: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      valorServicoAnuncio: 111213,
+      horasServicoAnuncio: 111,
+      avaliacaoAnuncioPessoa: 3.0,
+      qtdComentariosRealizados: 6,
+      nomeCategoriaAnuncio: "Pintura", 
+    },
+    {
+      idAnuncio: 1,
+      idPessoa: 11,
+      tituloAnuncio: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      valorServicoAnuncio: 111213,
+      horasServicoAnuncio: 111,
+      avaliacaoAnuncioPessoa: 3.0,
+      qtdComentariosRealizados: 6,
+      nomeCategoriaAnuncio: "Pintura", 
+    },
+    {
+      idAnuncio: 1,
+      idPessoa: 11,
+      tituloAnuncio: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      valorServicoAnuncio: 111213,
+      horasServicoAnuncio: 111,
+      avaliacaoAnuncioPessoa: 3.0,
+      qtdComentariosRealizados: 6,
+      nomeCategoriaAnuncio: "Pintura", 
+    },
+  ]);
+
+  const [relAnunciosFavoritos, setRelAnunciosFavoritos] = useState([ //Informações sobre Meus anúncio Favoritos e Interações que fiz
+    {
+      idAnuncio: 1,
+      idPessoa: 11,
+      tituloAnuncio: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      valorServicoAnuncio: 111213,
+      horasServicoAnuncio: 111,
+      avaliacaoAnuncio: 2.0,
+      interacaoMensagem: "Sim",
+      avaliacaoAnuncioPessoa: 3.0,
+      qtdComentariosRealizados: 6,
+      nomeCategoriaAnuncio: "Pintura", 
+    },
+  ]);
 
   const { logout, usuario, exibirAlertaSucesso, setExibirAlertaSucesso } =
     useContext(SistemaContext);
   const navigate = useNavigate();
+
+  const [openModal, setOpenModal] = useState(false);
 
   const [erros, setErros] = useState({
     tituloAnuncio: "*Obrigatório",
@@ -46,7 +97,7 @@ const MeuPerfil = () => {
     <div id="meu-perfil">
       <Navbar />
       <div className="bg-gradient-primary">
-      <div className="ListagemAnuncio__pesquisa-container">
+        <div className="ListagemAnuncio__pesquisa-container">
           <TextField
             className="ListagemAnuncio__input-pesquisar"
             label="Pesquise aqui"
@@ -55,13 +106,13 @@ const MeuPerfil = () => {
             size="small"
           ></TextField>
           <button
-            className="ListagemAnuncio__btn-pesquisar btn btn-warning"
+            className="btn btn-warning"
+            // onClick={() => AnunciosReport(clientes)}
+            onClick={() => setOpenModal(true)}
           >
-            <BsSearch />
+            Relatório
           </button>
-          <MobbFilter
-            valorLabel="Ordenar por"            
-          />
+          <MobbFilter valorLabel="Ordenar por" />
         </div>
         <div className="container">
           <div className="card o-hidden border-0   my-5 ">
@@ -133,7 +184,7 @@ const MeuPerfil = () => {
                         </div>
                       </div>
                     </form>
-                    <hr />                
+                    <hr />
                   </div>
                 </div>
               </div>
@@ -142,6 +193,10 @@ const MeuPerfil = () => {
         </div>
       </div>
       <MobbFooter />
+      <AnunciosReport
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
     </div>
   );
 };

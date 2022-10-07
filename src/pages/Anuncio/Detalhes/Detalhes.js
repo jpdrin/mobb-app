@@ -8,7 +8,9 @@ import {
   InsereAnuncioFavorito,
   verificaAnuncioFavorito,
   removeAnuncioFavorito,
-  avaliacaoAnuncioPessoa
+  avaliacaoAnuncioPessoa,
+  InsereMensagemAnuncio,
+  verificaInteracaoAnuncio,
 } from "../../../services/Api";
 import CarouselAnuncio from "../../../components/Carousel/Carousel";
 import { Container, Row, Col } from "reactstrap";
@@ -39,8 +41,9 @@ const Detalhes = () => {
   const [openModalAvaliar, setOpenModalAvaliar] = useState(false);
   const [tokenValido, setTokenValido] = useState(false);
   const [anuncioFavorito, setAnuncioFavorito] = useState(false);
-  const [avaliacaoPessoa, setAvaliacaoPessoa] = useState(0);  
-  const { usuario} = useContext(SistemaContext);
+  const [interacaoAnuncio, setInteracaoAnuncio] = useState(false);
+  const [avaliacaoPessoa, setAvaliacaoPessoa] = useState(0);
+  const { usuario } = useContext(SistemaContext);
   const ServicesRefTopo = useRef(document.getElementById("navMobb"));
   const navigate = useNavigate();
 
@@ -59,32 +62,33 @@ const Detalhes = () => {
     }
   }, []);
 
-  useEffect(() => {    
-    if (usuario){
+  useEffect(() => {
+    if (usuario) {
       retornaAvaliacaoPessoa();
-    }     
-    
-    if (!openModalAvaliar){
-      listaAnuncio(decryptId(idAnuncio));    
-      console.log('listou');
     }
-    
-          
+
+    if (!openModalAvaliar) {
+      listaAnuncio(decryptId(idAnuncio));
+      console.log("listou");
+    }
   }, [openModalAvaliar]);
 
-
   useEffect(() => {
-    if (usuario){
+    if (usuario) {
       validaAnuncioFavorito();
       retornaAvaliacaoPessoa();
-    }    
+      validaToken();
+      verificaInteracao();
+    }
   }, [usuario]);
-  
+
   const retornaAvaliacaoPessoa = async () => {
-    const response = await avaliacaoAnuncioPessoa(decryptId(idAnuncio), 
-                                                  usuario === null ? 0 : usuario.idPessoa);
+    const response = await avaliacaoAnuncioPessoa(
+      decryptId(idAnuncio),
+      usuario === null ? 0 : usuario.idPessoa
+    );
     setAvaliacaoPessoa(response.data);
-  }
+  };
 
   const listaAnuncio = async (idAnuncio) => {
     const response = await dadosAnuncio(idAnuncio);
@@ -124,6 +128,16 @@ const Detalhes = () => {
     setAnuncioFavorito(response.data);
   };
 
+  const verificaInteracao = async () => {
+    const idPessoa = usuario !== null ? usuario.idPessoa : 0;
+    const response = await verificaInteracaoAnuncio(
+      decryptId(idAnuncio),
+      idPessoa
+    );
+
+    setInteracaoAnuncio(response.data);
+  };
+
   const insereFavorito = async () => {
     const response = await InsereAnuncioFavorito(
       usuario.idPessoa,
@@ -145,9 +159,29 @@ const Detalhes = () => {
     if (response) {
       setAnuncioFavorito(false);
     }
-  };  
+  };
 
-  console.log(anuncio);  
+  const mensagemAnuncio = async () => {
+    const idPessoa = usuario !== null ? usuario.idPessoa : 0;
+    const response = await InsereMensagemAnuncio(
+      decryptId(idAnuncio),
+      idPessoa
+    );
+
+    if (response) {
+      var url =
+        `https://web.whatsapp.com/send?phone=${anuncio.telefoneContatoAnuncio}&text=` +
+        `Olá! Tenho interesse neste seu Anúncio: \n` +
+        window.location.href;
+
+      var ancora = document.createElement("a");
+      ancora.href = url;
+      ancora.target = "_blank";
+      ancora.click();
+    }
+  };
+
+  console.log(anuncio);
 
   return (
     <>
@@ -224,7 +258,7 @@ const Detalhes = () => {
                 </div>
 
                 <div className=" d-flex  gap-1 mb-4 mt-3 interacoes">
-                  {usuario && tokenValido && (
+                  {usuario && tokenValido && interacaoAnuncio && (
                     <button
                       onClick={() => setOpenModalAvaliar(true)}
                       className="btn btn-primary"
@@ -249,14 +283,11 @@ const Detalhes = () => {
                         <BsHeartFill size={25} /> Favoritar
                       </button>
                     ))}
-                  <button className="btn btn-success">
-                    <a
-                      href="https://web.whatsapp.com/send?phone=55%2014%2099833-6660&text=chamaaa"
-                      target="_blank"
-                      className="enviar-msg"
-                    >
-                      <SiWhatsapp size={25} /> Mensagem
-                    </a>
+                  <button
+                    className="btn btn-success"
+                    onClick={() => mensagemAnuncio()}
+                  >
+                    <SiWhatsapp size={25} /> Mensagem
                   </button>
                   <button
                     style={{ paddingLeft: "15px" }}

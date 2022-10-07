@@ -28,13 +28,13 @@ const data = [
     text: "Titulo",
     icon: <VscListFilter />,
   },
+  // {
+  //   value: "ID",
+  //   text: "ID",
+  //   icon: <VscListFilter />,
+  // },
   {
-    value: "ID",
-    text: "ID",
-    icon: <VscListFilter />,
-  },
-  {
-    value: 2,
+    value: "AD",
     text: "Maior Avaliação",
     icon: (
       <>
@@ -43,7 +43,7 @@ const data = [
     ),
   },
   {
-    value: 3,
+    value: "AA",
     text: "Menor Avaliação",
     icon: (
       <>
@@ -157,8 +157,9 @@ const ListagemAnuncios = () => {
             className="ListagemAnuncio__input-pesquisar"
             label="Pesquise aqui"
             type="text"
-            name="teste2"
+            name="pesquisar"
             size="small"
+            inputProps={{ maxLength: 50 }}
             onChange={(e) => setBusca(e.target.value)}
           ></TextField>
           <button
