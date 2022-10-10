@@ -32,6 +32,7 @@ import { FaHeartBroken } from "react-icons/fa";
 import Avaliar from "../../../components/Modal/Avaliacoes/Avaliar";
 import { Rating } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import Swal from "sweetalert2";
 
 const Detalhes = () => {
   const { idAnuncio } = useParams();
@@ -65,6 +66,7 @@ const Detalhes = () => {
   useEffect(() => {
     if (usuario) {
       retornaAvaliacaoPessoa();
+      console.log('avali1', usuario);
     }
 
     if (!openModalAvaliar) {
@@ -161,23 +163,40 @@ const Detalhes = () => {
     }
   };
 
+  const mensagemWhatsapp = () => {
+    var url =
+      `https://web.whatsapp.com/send?phone=${anuncio.telefoneContatoAnuncio}&text=` +
+      `Olá! Tenho interesse neste seu Anúncio: \n` +
+      window.location.href;
+
+    var ancora = document.createElement("a");
+    ancora.href = url;
+    ancora.target = "_blank";
+    ancora.click();
+  };
+
   const mensagemAnuncio = async () => {
-    const idPessoa = usuario !== null ? usuario.idPessoa : 0;
-    const response = await InsereMensagemAnuncio(
-      decryptId(idAnuncio),
-      idPessoa
-    );
+    if (!interacaoAnuncio) {
+      const idPessoa = usuario !== null ? usuario.idPessoa : 0;
+      const response = await InsereMensagemAnuncio(
+        decryptId(idAnuncio),
+        idPessoa
+      );
 
-    if (response) {
-      var url =
-        `https://web.whatsapp.com/send?phone=${anuncio.telefoneContatoAnuncio}&text=` +
-        `Olá! Tenho interesse neste seu Anúncio: \n` +
-        window.location.href;
-
-      var ancora = document.createElement("a");
-      ancora.href = url;
-      ancora.target = "_blank";
-      ancora.click();
+      Swal.fire({
+        title: "Aviso!",
+        text: "Ao realizar interação por mensagem, será liberado o botão de Avaliação do Anúncio após 24 desde a primeira interação." +
+              " Por favor, peçamos que avalie o atendimento e o serviço do Anúncio para nos retornar o FeedBack",
+        icon: "warning",
+        showCancelButton: false,
+        iconColor: "green",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK!",
+      }).then((result) => {
+        mensagemWhatsapp();
+      });
+    } else {
+      mensagemWhatsapp();
     }
   };
 

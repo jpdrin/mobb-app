@@ -227,8 +227,10 @@ export const verificaAnuncioFavorito = async (idPessoa, idAnuncio) => {
 };
 
 export const verificaInteracaoAnuncio = async (idAnuncio, idPessoa) => {
-  return Api.get(`Anuncios/verifica-interacao-anuncio/${idAnuncio}/${idPessoa}`);
-}
+  return Api.get(
+    `Anuncios/verifica-interacao-anuncio/${idAnuncio}/${idPessoa}`
+  );
+};
 
 export const avaliacaoAnuncioPessoa = async (idAnuncio, idPessoa) => {
   return Api.get(`Anuncios/avaliacao-anuncio-pessoa/${idAnuncio}/${idPessoa}`);
@@ -281,6 +283,26 @@ export const relInteracoesAnunciosFavPessoa = async (
   return Api.get(
     `Anuncios/relatorio-interacoes-anuncios-favoritos-pessoa?idPessoa=${idPessoa}&` +
       `idCategoriaAnuncio=${idCategoriaAnuncio}&` +
+      `dataCadastroInicial=${dataCadastroInicial.trim()}&` +
+      `dataCadastroFinal=${dataCadastroFinal.trim()}&` +
+      `avaliacaoInicial=${avaliacaoInicial}&` +
+      `avaliacaoFinal=${avaliacaoFinal}`
+  );
+};
+
+export const RelEstatisticasAnuncios = async (
+  idCategoriaAnuncio,
+  idEstado,
+  idCidade,
+  dataCadastroInicial,
+  dataCadastroFinal,
+  avaliacaoInicial,
+  avaliacaoFinal
+) => {
+  return Api.get(
+    `Anuncios/relatorio-anuncios-estatistico?idCategoriaAnuncio=${idCategoriaAnuncio}&` +
+      `idEstado=${idEstado}&` +
+      `idCidade=${idCidade}&` +
       `dataCadastroInicial=${dataCadastroInicial.trim()}&` +
       `dataCadastroFinal=${dataCadastroFinal.trim()}&` +
       `avaliacaoInicial=${avaliacaoInicial}&` +

@@ -12,62 +12,13 @@ import MobbFilter from "../../../components/MobbFilter/Filter";
 import AnunciosReport, {
   Report,
 } from "../../../components/Reports/Pessoa/AnunciosReport";
+import MobbSelect from "../../../components/MobbSelect/Select";
+import "./MeuPerfil.css";
 
 const MeuPerfil = () => {
-
-
-  const [relAnunciosInteragidos, setRelAnunciosInteragidos] = useState([ //Informações sobre os anúncio que eu interagi
-    {
-      idAnuncio: 1,
-      idPessoa: 11,
-      tituloAnuncio: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-      valorServicoAnuncio: 111213,
-      horasServicoAnuncio: 111,
-      avaliacaoAnuncioPessoa: 3.0,
-      qtdComentariosRealizados: 6,
-      nomeCategoriaAnuncio: "Pintura", 
-    },
-    {
-      idAnuncio: 1,
-      idPessoa: 11,
-      tituloAnuncio: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-      valorServicoAnuncio: 111213,
-      horasServicoAnuncio: 111,
-      avaliacaoAnuncioPessoa: 3.0,
-      qtdComentariosRealizados: 6,
-      nomeCategoriaAnuncio: "Pintura", 
-    },
-    {
-      idAnuncio: 1,
-      idPessoa: 11,
-      tituloAnuncio: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-      valorServicoAnuncio: 111213,
-      horasServicoAnuncio: 111,
-      avaliacaoAnuncioPessoa: 3.0,
-      qtdComentariosRealizados: 6,
-      nomeCategoriaAnuncio: "Pintura", 
-    },
-  ]);
-
-  const [relAnunciosFavoritos, setRelAnunciosFavoritos] = useState([ //Informações sobre Meus anúncio Favoritos e Interações que fiz
-    {
-      idAnuncio: 1,
-      idPessoa: 11,
-      tituloAnuncio: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-      valorServicoAnuncio: 111213,
-      horasServicoAnuncio: 111,
-      avaliacaoAnuncio: 2.0,
-      interacaoMensagem: "Sim",
-      avaliacaoAnuncioPessoa: 3.0,
-      qtdComentariosRealizados: 6,
-      nomeCategoriaAnuncio: "Pintura", 
-    },
-  ]);
-
   const { logout, usuario, exibirAlertaSucesso, setExibirAlertaSucesso } =
     useContext(SistemaContext);
-  const navigate = useNavigate();
-
+  const [tipoModalRelatorio, setTipoModalRelatorio] = useState(0);
   const [openModal, setOpenModal] = useState(false);
 
   const [erros, setErros] = useState({
@@ -81,6 +32,8 @@ const MeuPerfil = () => {
     senhaUsuarioPessoa: "*Obrigatório",
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     validaToken();
   }, []);
@@ -93,18 +46,33 @@ const MeuPerfil = () => {
     }
   };
 
+  const tiposModaisRelatório = [
+    {
+      value: 1,
+      label: "Analitico",
+    },
+    {
+      value: 2,
+      label: "Estatístico",
+    },
+  ];
+
+  console.log(tipoModalRelatorio);
+
   return (
     <div id="meu-perfil">
       <Navbar />
       <div className="bg-gradient-primary">
-        <div className="ListagemAnuncio__pesquisa-container">
-          <TextField
-            className="ListagemAnuncio__input-pesquisar"
-            label="Pesquise aqui"
-            type="text"
-            name="teste2"
-            size="small"
-          ></TextField>
+        <div> {/*className="MeuPerfil__pesquisa-container"*/}
+          <MobbSelect
+            valorLabel="Tipo do Relatório"
+            name="tipoRelatorio"
+            id="tipoRelatorio"
+            dataOptions={tiposModaisRelatório}
+            onChange={(e) => setTipoModalRelatorio(e.value)}
+            value={{value: tipoModalRelatorio}}
+            style={{width: "100%"}}
+          />
           <button
             className="btn btn-warning"
             // onClick={() => AnunciosReport(clientes)}
@@ -112,7 +80,6 @@ const MeuPerfil = () => {
           >
             Relatório
           </button>
-          <MobbFilter valorLabel="Ordenar por" />
         </div>
         <div className="container">
           <div className="card o-hidden border-0   my-5 ">
@@ -196,6 +163,7 @@ const MeuPerfil = () => {
       <AnunciosReport
         openModal={openModal}
         setOpenModal={setOpenModal}
+        tipoModalRel={tipoModalRelatorio}
       />
     </div>
   );
